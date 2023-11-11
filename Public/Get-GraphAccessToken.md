@@ -15,11 +15,12 @@ The `Get-GraphAccessToken` function retrieves an access token for the Microsoft 
 
 ## Usage Examples
 ```powershell
-Get-GraphAccessToken -ClientId "your-client-id" -ClientSecret "your-client-secret" -TenantId "your-tenant-id"
+Get-GraphAccessToken -ClientId "00000000-0000-0000-0000-000000000000" -ClientSecret "00000000-0000-0000-0000-000000000000" -TenantId "00000000-0000-0000-0000-000000000000"
+
 ```
 
 ```powershell
-Get-GraphAccessToken -ClientId "your-client-id" -ClientSecret "your-client-secret" -TenantId "your-tenant-id" -AsPlainText
+Get-GraphAccessToken -ClientId "00000000-0000-0000-0000-000000000000" -ClientSecret "00000000-0000-0000-0000-000000000000" -TenantId "00000000-0000-0000-0000-000000000000" -AsPlainText
 ```
 
 ## Function Operation
