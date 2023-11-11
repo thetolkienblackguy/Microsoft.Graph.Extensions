@@ -13,7 +13,7 @@ Function Backup-GraphConditionalAccessPolicy {
         The path to save the backup file to
 
         .EXAMPLE
-        Backup-GraphConditionalAccessPolicy -ConditionalAccessPolicyId "b8a3c3c0-ebbf-4a56-bf5a-3be8b416e9c4" -Path "C:\temp"
+        Backup-GraphConditionalAccessPolicy -ConditionalAccessPolicyId "00000000-0000-0000-0000-000000000000" -Path "C:\temp"
 
         .INPUTS
         System.String
@@ -26,7 +26,7 @@ Function Backup-GraphConditionalAccessPolicy {
         https://docs.microsoft.com/en-us/graph/api/resources/conditionalaccesspolicy?view=graph-rest-1.0
         
         .NOTES
-        Author: Gabriel Delaney
+        Author: Gabriel Delaney | gdelaney@phzconsulting.com
         Date: 11/11/2023
         Version: 0.0.1
         Name: Backup-GraphConditionalAccessPolicy
