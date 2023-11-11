@@ -1,4 +1,4 @@
-Function Set-MgeAttachmentArray {
+Function Set-GraphAttachmentArray {
     <#
         .DESCRIPTION
         This function sets the attachment array for the Send-GraphMailMessage function.
