@@ -1,9 +1,10 @@
-#Get public and private function definition files.
+# Get public and private function definition files.
 $public  = @(Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue)
 $private = @(Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue)
+# Get classes
 $classes = @(Get-ChildItem -Path $PSScriptRoot\Classes\*.ps1 -ErrorAction SilentlyContinue)
 
-#Dot source the files
+# Dot source the files
 Foreach($import in @($classes + $public + $private)) {
     $full_name = $import.fullname
     Try {
