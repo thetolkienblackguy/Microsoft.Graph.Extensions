@@ -32,7 +32,7 @@ Function Backup-GraphConditionalAccessPolicy {
         Name: Backup-GraphConditionalAccessPolicy
 
         Version History:
-        0.0.1 - Alpha Release - 11/09/2023 - Gabe Delaney
+        0.0.1 - Alpha Release - 11/11/2023 - Gabe Delaney
 
     #>
     [CmdletBinding()]
@@ -54,12 +54,21 @@ Function Backup-GraphConditionalAccessPolicy {
         $PSDefaultParameterValues = @{}
         $PSDefaultParameterValues["Join-Path:Path"] = $path
         $PSDefaultParameterValues["ConvertTo-Json:Depth"] = 10
+        $PSDefaultParameterValues["Invoke-MgGraphRequest:Method"] = "GET"
 
     } Process {
         Foreach ($id in $conditionalAccessPolicyId) {
             # Get the policy
             Write-Verbose -Message "Backing up Conditional Access Policy with Id: $id"
-            $policy = Get-mgIdentityConditionalAccessPolicy -ConditionalAccessPolicyId $id
+            Try {
+                # Get the policy
+                $policy = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/identity/conditionalAccess/policies/$id"
+
+            } Catch {
+                # Write the error
+                Write-Error -Message "Failed to backup Conditional Access Policy with Id: $id. Due to error: $($_.Exception.Message)"
+
+            }
 
             # Create the file name
             $file_name = "$($policy.DisplayName.ToString()).json"
