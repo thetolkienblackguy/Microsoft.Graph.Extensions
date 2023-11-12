@@ -40,8 +40,7 @@ Function Restore-GraphConditionalAccessPolicy {
 
         Version History:
         0.0.1 - Alpha Release - 11/11/2023 - Gabe Delaney
-    
-    
+
     #>
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
