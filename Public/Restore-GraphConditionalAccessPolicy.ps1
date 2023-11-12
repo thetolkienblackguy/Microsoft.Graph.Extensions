@@ -12,6 +12,9 @@ Function Restore-GraphConditionalAccessPolicy {
         .PARAMETER State
         The state of the conditional access policy. Valid values are Enabled, Disabled, enabledForReportingButNotEnforced, and Current. The default value is enabledForReportingButNotEnforced
 
+        .PARAMETER NewDisplayName
+        The new display name for the conditional access policy. If this parameter is not specified, the display name will be the same as the original policy with (RESTORED) appended to the end
+        
         .PARAMETER PassThru
         Returns the response from the Graph API
 
@@ -20,6 +23,9 @@ Function Restore-GraphConditionalAccessPolicy {
 
         .EXAMPLE
         Restore-GraphConditionalAccessPolicy -Path .\policy.json -State Disabled
+
+        .EXAMPLE
+        Restore-GraphConditionalAccessPolicy -Path .\policy.json -State Current -NewDisplayName "My New Policy"
         
         .INPUTS
         System.IO.FileInfo
@@ -52,6 +58,8 @@ Function Restore-GraphConditionalAccessPolicy {
         [ValidateSet("Enabled", "Disabled", "enabledForReportingButNotEnforced", "Current")]   
         [string]$State = "enabledForReportingButNotEnforced",
         [Parameter(Mandatory=$false)]
+        [String]$NewDisplayName,
+        [Parameter(Mandatory=$false)]
         [switch]$PassThru
     
     )
@@ -75,10 +83,19 @@ Function Restore-GraphConditionalAccessPolicy {
             # Read the JSON file
             $json = Get-Content $p | Select-String @select_string_params
             $obj = $json | ConvertFrom-Json
-            $display_name = $obj.displayName
-            $json = [JsonModifier]::Modify($json, "displayName", "$($display_name) (RESTORED)") 
+
+            # Modify the JSON. If -NewDisplayName is specified, use that value. 
+            # Otherwise, append (RESTORED) to the end of the display name
+            If ($PSBoundParameters.ContainsKey("NewDisplayName")) {
+                $display_name = $newDisplayName
+
+            } Else {
+                $display_name = "$($obj.displayName) (RESTORED)"
+            
+            }
+            $json = [JsonModifier]::Modify($json, "displayName", $display_name) 
             If ($state -ne "Current") {
-                $json = [JsonModifier]::Modify($json, "state", "$($State)")
+                $json = [JsonModifier]::Modify($json, "state", $state)
 
             }
             Try {
