@@ -15,6 +15,9 @@ Function Backup-GraphConditionalAccessPolicy {
         .EXAMPLE
         Backup-GraphConditionalAccessPolicy -ConditionalAccessPolicyId "00000000-0000-0000-0000-000000000000" -Path "C:\temp"
 
+        .EXAMPLE
+        Get-MgIdentityConditionalAccessPolicy | Backup-GraphConditionalAccessPolicy -Path "C:\temp"
+
         .INPUTS
         System.String
         System.IO.FileInfo
