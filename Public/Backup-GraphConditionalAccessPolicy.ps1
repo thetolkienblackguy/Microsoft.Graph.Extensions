@@ -41,7 +41,7 @@ Function Backup-GraphConditionalAccessPolicy {
     [CmdletBinding()]
     [OutputType([system.string])]
     Param (
-        [Parameter(Mandatory=$true, ValueFromPipeline, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true,ValueFromPipeline,ValueFromPipelineByPropertyName=$true)]
         [Alias("Id","PolicyId")]
         [string[]]$ConditionalAccessPolicyId,
         [Parameter(Mandatory=$true)]
