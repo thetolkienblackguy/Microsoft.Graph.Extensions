@@ -38,6 +38,8 @@ Function Send-GraphMailMessage {
         
         .INPUTS
         System.String
+        System.IO.FileInfo
+        System.Management.Automation.SwitchParameter
 
         .OUTPUTS
         System.Collections.Hashtable
@@ -71,7 +73,7 @@ Function Send-GraphMailMessage {
         [Parameter(Mandatory=$false)]
         [string[]]$Bcc,
         [Parameter(Mandatory=$false)]
-        [string[]]$Attachments,
+        [system.io.fileinfo[]]$Attachments,
         [Parameter(Mandatory=$false)]
         [switch]$PassThru
 
