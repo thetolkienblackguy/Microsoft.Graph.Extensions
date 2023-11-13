@@ -51,11 +51,14 @@ Function Restore-GraphConditionalAccessPolicy {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
     param (
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [Alias("FullName")]
         [system.io.fileinfo[]]$Path,
         [Parameter(Mandatory=$false)]
-        [ValidateSet("Enabled", "Disabled", "enabledForReportingButNotEnforced", "Current")]   
+        [ValidateSet(
+            "Enabled", "Disabled", "enabledForReportingButNotEnforced", "Current"
+            
+        )]   
         [string]$State = "enabledForReportingButNotEnforced",
         [Parameter(Mandatory=$false)]
         [String]$NewDisplayName,
