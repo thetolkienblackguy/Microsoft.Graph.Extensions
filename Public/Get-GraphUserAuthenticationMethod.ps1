@@ -41,21 +41,23 @@ Function Get-GraphUserAuthenticationMethod {
     [CmdletBinding(DefaultParameterSetName="UserId")]
     [OutputType([System.Collections.Generic.List[PSCustomObject]])]
     param(
-        [Parameter(Mandatory=$true, ParameterSetName="UserId", ValueFromPipeline=$true,
-                ValueFromPipelineByPropertyName=$true
+        [Parameter(
+            Mandatory=$true,ParameterSetName="UserId",ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true
         
         )]
         [Alias("UserPrincipalName","UPN")]
         [string[]]$UserId,
         [Parameter(Mandatory=$false)]
-        [ValidateSet("AuthenticatorApp", "PhoneAuthentication", "Fido2", "WindowsHelloForBusiness", 
-                "EmailAuthentication", "TemporaryAccessPass", "Passwordless", "SoftwareOath"
+        [ValidateSet(
+            "AuthenticatorApp", "PhoneAuthentication", "Fido2", "WindowsHelloForBusiness", 
+            "EmailAuthentication", "TemporaryAccessPass", "Passwordless", "SoftwareOath"
             
         )]
         [string]$Method,
-        [Parameter(Mandatory=$false, ParameterSetName="All")]
+        [Parameter(Mandatory=$false,ParameterSetName="All")]
         [string]$Filter,
-        [Parameter(Mandatory=$false, ParameterSetName="All")]
+        [Parameter(Mandatory=$false,ParameterSetName="All")]
         [switch]$All
     
     )
