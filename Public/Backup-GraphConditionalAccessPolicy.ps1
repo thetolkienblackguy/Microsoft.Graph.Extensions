@@ -55,7 +55,6 @@ Function Backup-GraphConditionalAccessPolicy {
     Begin {
         # Set the default parameter values
         $PSDefaultParameterValues = @{}
-        $PSDefaultParameterValues["Join-Path:Path"] = $path
         $PSDefaultParameterValues["ConvertTo-Json:Depth"] = 10
         $PSDefaultParameterValues["Invoke-MgGraphRequest:Method"] = "GET"
 
@@ -77,7 +76,7 @@ Function Backup-GraphConditionalAccessPolicy {
             $file_name = "$($policy.DisplayName.ToString()).json"
 
             # Create the file path
-            $file_path = Join-Path -ChildPath ([RemoveInvalidCharsFromFileName]::RemoveInvalidChars($file_name)) 
+            $file_path = Join-Path -ChildPath $(Remove-InvalidFileNameChars -FileName $file_name) -Path $path
 
             # Save the policy
             Write-Verbose -Message "Saving Conditional Access Policy to $file_path"
