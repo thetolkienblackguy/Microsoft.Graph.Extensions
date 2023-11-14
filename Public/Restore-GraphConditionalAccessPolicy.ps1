@@ -53,6 +53,10 @@ Function Restore-GraphConditionalAccessPolicy {
     param (
         [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [Alias("FullName")]
+        [ValidateScript({
+            Test-Path $_ -PathType Leaf
+        
+        })]
         [system.io.fileinfo[]]$Path,
         [Parameter(Mandatory=$false)]
         [ValidateSet(
