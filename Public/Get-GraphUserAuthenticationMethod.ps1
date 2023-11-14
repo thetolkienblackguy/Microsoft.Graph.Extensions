@@ -102,7 +102,7 @@ Function Get-GraphUserAuthenticationMethod {
                     $data_table = $m.AdditionalProperties
 
                     # If the method type is not in the method table, skip it.
-                    $method_type = [AuthenticationMethodTable]::GetAuthenticationMethod($data_table["@odata.type"])
+                    $method_type = [GraphAuthenticationMethodTable]::GetAuthenticationMethod($data_table["@odata.type"])
                     If ($PSBoundParameters.ContainsKey('Method') -and $method_type -notin $method) {
                         Continue
                     
