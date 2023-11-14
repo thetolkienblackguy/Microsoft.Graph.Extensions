@@ -50,7 +50,7 @@ Function Get-GraphAccessToken {
         [string]$ClientId,
         [Parameter(Mandatory=$true)]
         [Alias("Secret")]
-        [SecureStringTransformation()]
+        [SecureStringDecoder()]
         [object]$ClientSecret,
         [Parameter(Mandatory=$true)] 
         [string]$TenantId,
