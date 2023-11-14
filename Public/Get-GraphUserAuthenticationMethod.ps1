@@ -28,14 +28,22 @@ Function Get-GraphUserAuthenticationMethod {
         .EXAMPLE
         Get-MgUser -Filter "startswith(UserPrincipalName, 'jdoe')" | Get-GraphUserAuthenticationMethod
 
+        .INPUTS
+        System.String
+        System.Management.Automation.SwitchParameter
+
+        .OUTPUTS
+        System.Collections.Generic.List[PSCustomObject]
+
+
         .NOTES
         Author: Gabriel Delaney
-        Date: 11/12/2023
+        Date: 11/13/2023
         Version: 0.0.1
         Name: Get-GraphUserAuthenticationMethod
 
         Version History:
-        0.0.1 - Alpha Release - 11/11/2023 - Gabe Delaney
+        0.0.1 - Alpha Release - 11/13/2023 - Gabe Delaney
     
     #>
     [CmdletBinding(DefaultParameterSetName="UserId")]
@@ -99,15 +107,13 @@ Function Get-GraphUserAuthenticationMethod {
                         Continue
                     
                     }
-                    # Get the device name.
-                    $device = [AuthenticationMethodData]::GetDeviceData($method_type, $data_table)
 
                     # Create the object and add it to the list.
                     $method_obj = [Ordered] @{}
                     $method_obj["UserPrincipalName"] = $u
                     $method_obj["AuthenticationMethodId"] = $m.Id
                     $method_obj["Method"] = $method_type
-                    $method_obj["Device"] = $device
+                    $method_obj["Device"] = Get-GraphAuthenticationMethodDeviceData -MethodType $method_type -DataTable $data_table
                     [void]$obj.Add([PSCustomObject]$method_obj) 
 
                 }
