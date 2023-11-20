@@ -35,7 +35,6 @@ Function Get-GraphUserAuthenticationMethod {
         .OUTPUTS
         System.Collections.Generic.List[PSCustomObject]
 
-
         .NOTES
         Author: Gabriel Delaney
         Date: 11/13/2023
