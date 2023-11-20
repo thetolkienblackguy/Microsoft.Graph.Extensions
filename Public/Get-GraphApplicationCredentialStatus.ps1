@@ -42,7 +42,6 @@ Function Get-GraphApplicationCredentialStatus {
         .OUTPUTS
         System.Collections.Generic.List[pscustomobject]
 
-
         .NOTES
         Author: Gabriel Delaney | gdelaney@phzconsulting.com
         Date: 11/16/2023
