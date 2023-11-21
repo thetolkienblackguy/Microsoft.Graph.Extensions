@@ -1,5 +1,28 @@
 Function New-GraphOutboundCrossTenantSyncConfiguration {
     <#
+        .DESCRIPTION
+        Creates a new outbound cross-tenant sync configuration
+
+        .SYNOPSIS
+        Creates a new outbound cross-tenant sync configuration
+
+        .PARAMETER TenantId
+        The tenant ID of the target tenant
+
+        .PARAMETER TenantName
+        The tenant name of the target tenant
+
+        .PARAMETER EnableAutomaticUserConsent
+        This parameter specifies whether to enable automatic user consent for outbound cross-tenant sync. The default value is $true.
+
+        .PARAMETER PassThru
+        This parameter specifies whether to return the current settings after enabling outbound cross-tenant sync. The default value is $false.
+
+        .EXAMPLE
+        New-GraphOutboundCrossTenantSyncConfiguration -TenantId "00000000-0000-0000-0000-000000000000" -TenantName "contoso.onmicrosoft.com" -EnableAutomaticUserConsent $true
+
+        .EXAMPLE
+        New-GraphOutboundCrossTenantSyncConfiguration -TenantId "00000000-0000-0000-0000-000000000000" -TenantName "contoso.onmicrosoft.com" -EnableAutomaticUserConsent $true -PassThru | Format-List
 
         .INPUTS
         System.String
@@ -8,9 +31,6 @@ Function New-GraphOutboundCrossTenantSyncConfiguration {
 
         .OUTPUTS
         System.Object
-
-        .LINK
-        https://docs.microsoft.com/en-us/graph/api/resources/policyconfigurationpartner?view=graph-rest-beta
 
         .NOTES
         Author: Gabriel Delaney | gdelaney@phzconsulting.com
@@ -59,7 +79,6 @@ Function New-GraphOutboundCrossTenantSyncConfiguration {
         $invoke_instantiate_params = @{}
         $invoke_instantiate_params["DisplayName"] = $tenantName
         $invoke_instantiate_params["ApplicationTemplateId"] = "518e5f48-1fc8-4c48-9387-9fdf28b0dfe7"
-
     } Process {
         Try {
             # Check if an outbound cross-tenant sync already exist
