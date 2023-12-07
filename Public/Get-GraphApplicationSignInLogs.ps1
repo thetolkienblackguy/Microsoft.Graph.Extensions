@@ -52,10 +52,9 @@ Function Get-GraphApplicationSignInLogs {
 
         Version History:
         0.0.1 - Alpha Release - 12/06/2023 - Gabe Delaney
-        
-    
+          
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName="AppDisplayName")]
     [OutputType([System.Collections.Generic.List[Object]])]
     Param (
         [Parameter(Mandatory=$true,ParameterSetName="AppDisplayName")]
@@ -64,16 +63,19 @@ Function Get-GraphApplicationSignInLogs {
         [String]$AppId,
         [Parameter(Mandatory=$false)]
         [Alias("Start")]
-        [utcdatetime]$StartDate = (Get-Date).AddDays(-30),
+        [utcdatetime]$StartDate = (Get-Date 00:00:00).AddDays(-30),
         [Parameter(Mandatory=$false)]
         [ValidateScript({
             If ([datetime]$_.ToString() -gt [datetime]$startDate.ToString()) {
+                $true 
+            
+            } Else {
                 Throw "End date must be greater than start date"
             
-            }  
+            }
         })]
         [Alias("End")]
-        [utcdatetime]$EndDate = (Get-Date),
+        [utcdatetime]$EndDate = (Get-Date 00:00:00),
         [Parameter(Mandatory=$false)]
         [switch]$ReturnUniqueLoginsPerDay
 
