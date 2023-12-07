@@ -65,15 +65,6 @@ Function Get-GraphApplicationSignInLogs {
         [Alias("Start")]
         [utcdatetime]$StartDate = (Get-Date 00:00:00).AddDays(-30),
         [Parameter(Mandatory=$false)]
-        [ValidateScript({
-            If ([datetime]$_.ToString() -gt [datetime]$startDate.ToString()) {
-                $true 
-            
-            } Else {
-                Throw "End date must be greater than start date"
-            
-            }
-        })]
         [Alias("End")]
         [utcdatetime]$EndDate = (Get-Date 00:00:00),
         [Parameter(Mandatory=$false)]
