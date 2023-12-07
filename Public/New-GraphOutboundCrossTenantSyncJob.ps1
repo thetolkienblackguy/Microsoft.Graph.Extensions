@@ -54,8 +54,8 @@ Function New-GraphOutboundCrossTenantSyncJob {
         $invoke_graph_params = @{}
         $invoke_graph_params["Method"] = "PUT"
         $invoke_graph_params["Uri"] = "https://graph.microsoft.com/v1.0/servicePrincipals/$servicePrincipalId/synchronization/secrets"
-        $invoke_graph_params["Body"] = @{}
         # Request body
+        $invoke_graph_params["Body"] = @{}
         $invoke_graph_params["Body"]["value"] = [system.collections.arraylist] @()
         [void]$invoke_graph_params["Body"]["value"].Add(@{
             "key" = "CompanyId"

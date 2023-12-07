@@ -116,15 +116,16 @@ Function Send-GraphMailMessage {
         $mail_message["message"] = $message
 
         # Setting the Invoke-MgGraphRequest parameters
-        $invoke_mggraph_params = @{}
-        $invoke_mggraph_params["Uri"] = "https://graph.microsoft.com/v1.0/users/$from/sendMail"
-        $invoke_mggraph_params["Method"] = "Post"
-        $invoke_mggraph_params["Body"] = $mail_message | ConvertTo-Json -Depth 4
-        $invoke_mggraph_params["ContentType"] = "application/json"
+        $invoke_graph_params = @{}
+        $invoke_graph_params["Uri"] = "https://graph.microsoft.com/v1.0/users/$from/sendMail"
+        $invoke_graph_params["Method"] = "Post"
+        $invoke_graph_params["Body"] = $mail_message | ConvertTo-Json -Depth 4
+        $invoke_graph_params["ContentType"] = "application/json"
+        $invoke_graph_params["OutputType"] = "PSObject"
 
     } Process {
         # Sending the message
-        $r = Invoke-MgGraphRequest @invoke_mggraph_params
+        $r = Invoke-MgGraphRequest @invoke_graph_params
 
     } End {
         # Returning the response if the PassThru switch is used
