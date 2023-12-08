@@ -18,20 +18,11 @@ Function Get-GraphApplicationSignInLogs {
         .PARAMETER EndDate
         The end date for the logs
 
-        .PARAMETER ReturnUniqueLoginsPerDay
-        If specified, returns the unique logins per day instead of the raw logs
-
         .EXAMPLE
         Get-GraphApplicationSignInLogs -AppDisplayName "Microsoft Teams" -StartDate (Get-Date).AddDays(-30) -EndDate (Get-Date)
 
         .EXAMPLE
         Get-GraphApplicationSignInLogs -AppId "00000003-0000-0ff1-ce00-000000000000" -StartDate (Get-Date).AddDays(-30) -EndDate (Get-Date)
-
-        .EXAMPLE
-        Get-GraphApplicationSignInLogs -AppDisplayName "Microsoft Teams" -StartDate (Get-Date).AddDays(-30) -EndDate (Get-Date) -ReturnUniqueLoginsPerDay
-
-        .EXAMPLE
-        Get-GraphApplicationSignInLogs -AppId "00000003-0000-0ff1-ce00-000000000000" -StartDate (Get-Date).AddDays(-30) -EndDate (Get-Date) -ReturnUniqueLoginsPerDay
 
         .INPUTS
         System.String
@@ -66,9 +57,7 @@ Function Get-GraphApplicationSignInLogs {
         [utcdatetime]$StartDate = (Get-Date 00:00:00).AddDays(-30),
         [Parameter(Mandatory=$false)]
         [Alias("End")]
-        [utcdatetime]$EndDate = (Get-Date 00:00:00),
-        [Parameter(Mandatory=$false)]
-        [switch]$ReturnUniqueLoginsPerDay
+        [utcdatetime]$EndDate = (Get-Date 00:00:00)
 
     )
     Begin {
@@ -103,7 +92,7 @@ Function Get-GraphApplicationSignInLogs {
 
             # Update the next link
             $next_link = $r.'@odata.nextLink'
-           $invoke_graph_params["Uri"] = $next_link
+            $invoke_graph_params["Uri"] = $next_link
         
         # Continue while there is a next link
         } While ($next_link)
@@ -113,15 +102,9 @@ Function Get-GraphApplicationSignInLogs {
             Write-Warning "No sign in logs found for the specified application and date range"
         
         } Else {
-            # Return the unique logins per day if the -ReturnUniqueLoginsPerDay switch is specified
-            If ($returnUniqueLoginsPerDay) {
-                Get-UniqueLoginsPerDay -Logs $output_obj
-            
-            # Otherwise return the raw logs
-            } Else {
-                $output_obj
+            # Return the output
+            $output_obj
 
-            }
         }
     }
 }
