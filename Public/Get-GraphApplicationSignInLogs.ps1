@@ -64,22 +64,25 @@ Function Get-GraphApplicationSignInLogs {
         # Create a list to store the output
         $output_obj = [System.Collections.Generic.List[Object]]::new()
 
-        # Create the filter string
-        $filter = "createdDateTime ge {0} and createdDateTime le {1}" -f $startDate.ToString(), $endDate.ToString()
+        # Create a string builder to store the filter
+        $filter = [System.Text.StringBuilder]::new()
+
+        # Append the date range to the filter
+        [void]$filter.Append("$("createdDateTime ge {0} and createdDateTime le {1}" -f $startDate.ToString(), $endDate.ToString())")
         
         # Update the filter string based on the parameter set
         If ($PSCmdlet.ParameterSetName -eq "AppDisplayName") {
             Write-Warning "AppDisplayName is case sensitive, if you are not seeing any results, try using the AppId parameter instead"
-            $filter += " and appDisplayName eq '$appDisplayName'"
+            [void]$filter.Append(" and appDisplayName eq '$appDisplayName'")
         
         } ElseIf ($PSCmdlet.ParameterSetName -eq "AppId") {
-            $filter += " and appId eq '$appId'"
+            [void]$filter.Append(" and appId eq '$appId'")
         
         }
 
         # Invoke-MgGraphRequest parameters
         $invoke_graph_params = @{}
-        $invoke_graph_params["Uri"] = "https://graph.microsoft.com/v1.0/auditLogs/signIns?`$filter=$filter"
+        $invoke_graph_params["Uri"] = "https://graph.microsoft.com/v1.0/auditLogs/signIns?`$filter=$($filter.ToString())"
         $invoke_graph_params["Method"] = "GET"
         $invoke_graph_params["OutputType"] = "PSObject"
     } Process {
