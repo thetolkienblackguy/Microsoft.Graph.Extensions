@@ -73,7 +73,7 @@ Function Send-GraphMailMessage {
         [Parameter(Mandatory=$false)]
         [string[]]$Bcc,
         [Parameter(Mandatory=$false)]
-        [system.io.fileinfo[]]$Attachments,
+        [array]$Attachments,
         [Parameter(Mandatory=$false)]
         [switch]$PassThru
 
@@ -108,7 +108,7 @@ Function Send-GraphMailMessage {
 
         # Setting attachments
         If ($PSBoundParameters.ContainsKey("Attachments")) {
-            $message["attachments"] = @(Set-GraphAttachmentArray -Attachments $attachments])
+            $message["attachments"] = @(Set-GraphAttachmentArray -Attachments $attachments)
 
         }
 
