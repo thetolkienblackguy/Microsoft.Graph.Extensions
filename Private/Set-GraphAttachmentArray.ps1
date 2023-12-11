@@ -36,7 +36,7 @@ Function Set-GraphAttachmentArray {
     [OutputType([System.Collections.ArrayList])]
     param (   
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [System.IO.File[]]$Attachments
+        [array]$Attachments
 
     )
     Begin {
