@@ -58,6 +58,7 @@ Function Get-GraphGroupTransitiveMember {
             $next_link = $r."@odata.nextLink"
             $invoke_mg_params["Uri"] = $next_link
         
+        # Loop until there are no more pages
         } While ($next_link)
 
     } End {
