@@ -41,7 +41,7 @@ Function Set-GraphUserCertificateUserIds {
         0.0.1 - Alpha Release - 11/14/2023 - Gabe Delaney
 
     #>
-    [CmdletBinding(DefaultParameterSetName="Value")]
+    [CmdletBinding(DefaultParameterSetName="Value",SupportsShouldProcess=$true,ConfirmImpact="Low")]
     [OutputType([System.Collections.Generic.List[PSCustomObject]])]
     param (
         [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
@@ -192,13 +192,15 @@ Function Set-GraphUserCertificateUserIds {
         }
 
         # Update the user
-        Try {     
-            Invoke-MgGraphRequest @invoke_mg_params
-            Write-Verbose "Updated the CertificateUserIds to $value for user $userId"
-        
-        } Catch {
-            Write-Error "Failed to update the CertificateUserIds to $value for user $userId due to the following error: $($_.Exception.Message)"
-        
+        If ($PSCmdlet.ShouldProcess("$id","Set-CertificateUserIds")) {
+            Try {     
+                Invoke-MgGraphRequest @invoke_mg_params
+                Write-Verbose "Updated the CertificateUserIds to $value for user $userId"
+            
+            } Catch {
+                Write-Error "Failed to update the CertificateUserIds to $value for user $userId due to the following error: $($_.Exception.Message)"
+            
+            }
         }
     } End {
         If ($passThru) {
