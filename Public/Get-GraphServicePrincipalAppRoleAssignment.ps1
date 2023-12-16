@@ -1,7 +1,10 @@
 Function Get-GraphServicePrincipalAppRoleAssignment {
     <#
         .DESCRIPTION
-        This function will return all of the app role assignments for a service principal and all of its transitive members.
+        This function will return all of the app role assignments for a service principal.
+
+        .SYNOPSIS
+        This function will return all of the app role assignments for a service principal.
 
         .PARAMETER ServicePrincipalId
         The ID of the service principal to get the app role assignments for.
@@ -36,6 +39,7 @@ Function Get-GraphServicePrincipalAppRoleAssignment {
     
     #>
     [CmdletBinding(DefaultParameterSetName="ServicePrincipalId")]
+    [OutputType([System.Management.Automation.PSCustomObject])]
     param (
         [Parameter(
             Mandatory=$true,ParameterSetName="ServicePrincipalId",ValueFromPipeline=$true,
