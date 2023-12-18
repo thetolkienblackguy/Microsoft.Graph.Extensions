@@ -36,7 +36,7 @@ Function Get-GraphConditionalAccessPolicy {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.PSObject])]
     Param (
-        [Parameter(Mandatory=$false,ValueFromPipeline,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$false,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [Alias("Id","PolicyId")]
         [string[]]$ConditionalAccessPolicyId
 
