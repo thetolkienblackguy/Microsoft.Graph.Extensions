@@ -61,7 +61,6 @@ Function Backup-GraphConditionalAccessPolicy {
     } Process {
         Foreach ($id in $conditionalAccessPolicyId) {
             # Get the policy
-            Write-Verbose -Message "Backing up Conditional Access Policy with Id: $id"
             Try {
                 # Get the policy
                 $policy = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/identity/conditionalAccess/policies/$id"
