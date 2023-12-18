@@ -1,4 +1,4 @@
-function ConvertTo-FlatObject {
+Function ConvertTo-FlatObject {
     <#
         .DESCRIPTION
         Converts a Graph API object to a flat object. This is useful for exporting to CSV or other formats that don't support nested objects. 
