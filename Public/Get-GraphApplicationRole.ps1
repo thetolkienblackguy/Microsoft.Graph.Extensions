@@ -6,31 +6,28 @@ Function Get-GraphApplicationRole {
         .SYNOPSIS
         Gets the application roles for a given application id
 
-        .PARAMETER ServicePrincipalId
-        The service principal id of the application to get the roles for
-
-        .PARAMETER AppId
+        .PARAMETER ApplicationId
         The application id of the application to get the roles for
 
         .PARAMETER OutputType
-        The output type of the cmdlet. Valid values are PSObject, Hashtable
+        The output type of the cmdlet. Valid values are PSObject, Hashtable, JSON, HttpResponseMessage
 
         .EXAMPLE
-        Get-GraphApplicationRole -ServicePrincipalId 00000000-0000-0000-0000-000000000000
+        Get-GraphApplicationRole -ApplicationId "00000000-0000-0000-0000-000000000000"
 
         .EXAMPLE
-        Get-GraphApplicationRole -AppId 00000000-0000-0000-0000-000000000000
+        Get-MgApplication -ApplicationId "00000000-0000-0000-0000-000000000000" | Get-GraphApplicationRole
 
         .EXAMPLE
-        Get-GraphApplicationRole -AppId 00000000-0000-0000-0000-000000000000 -OutputType Hashtable
+        Get-GraphApplicationRole -ApplicationId "00000000-0000-0000-0000-000000000000" -OutputType "JSON"
 
         .INPUTS
-        System.Guid
         System.String
 
         .OUTPUTS
         System.Hashtable
         System.Management.Automation.PSCustomObject
+        System.String
 
         .NOTES
         Author: Gabriel Delaney | gdelaney@phzconsulting.com
@@ -42,63 +39,43 @@ Function Get-GraphApplicationRole {
         0.0.1 - Alpha Release - 12/17/2023 - Gabe Delaney
     
     #>
-    [CmdletBinding(DefaultParameterSetName="ServicePrincipalId")]
+    [CmdletBinding()]
     [OutputType(
-        [System.Management.Automation.PSCustomObject],[Hashtable]
+        [System.Management.Automation.PSCustomObject],[Hashtable],[System.String]
         
     )]
     param (
-        [Parameter(
-            Mandatory=$true,ParameterSetName="ServicePrincipalId",ValueFromPipeline=$true,
-            ValueFromPipelineByPropertyName=$true
-            
-        )]
-        [Alias('Id')]
-        [guid]$ServicePrincipalId,
-        [Parameter(Mandatory=$true,ParameterSetName="AppId",ValueFromPipelineByPropertyName=$true)]
-        [guid]$AppId,
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Alias("Id")]
+        [guid]$ApplicationId,
         [Parameter(Mandatory=$false)]
         [ValidateSet(
-            "PSObject","Hashtable"
+            "PSObject","Hashtable","JSON"
         
         )]
-        [string]$OutputType = "PSObject"
+        [string]$OutputType = "Hashtable"
     
     )
     Begin {
-        # Create identifier property for the request
-        If ($PSCmdlet.ParameterSetName -eq "ServicePrincipalId") {
-            $id = "/$($servicePrincipalId)"
-            
-        } Else {
-            $id = "(appId='$($appId)')"
-        
-        }
     } Process {
-        # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
         $invoke_mg_params["Method"] = "GET"
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/servicePrincipals$($id)?`$select=appRoles"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/applications/$($applicationId)?`$select=appRoles"
         $invoke_mg_params["OutputType"] = $outputType
-
-        # Invoke the request
         Try {
-            # Loop through the results if there is a next link
-            $output_obj = Do {
-                $r = Invoke-MgGraphRequest @invoke_mg_params
-                $r.appRoles
-                $next_link = $r."@odata.nextLink"
-                $invoke_mg_params["Uri"] = $next_link
-
-            } Until (!$next_link)
+            $r = Invoke-MgGraphRequest @invoke_mg_params
+        
         } Catch {
-            # If there is an error, write the error to the pipeline
             Write-Error $_.Exception.Message -ErrorAction Stop
             
         }
     } End {
-        # Return the output object
-        $output_obj
+        If ($outputType -eq "JSON") {
+            $r
         
+        } Else {
+            $r.appRoles
+        
+        } 
     }
 }
