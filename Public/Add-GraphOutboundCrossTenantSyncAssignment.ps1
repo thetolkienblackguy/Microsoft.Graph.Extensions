@@ -86,8 +86,8 @@ Function Add-GraphOutboundCrossTenantSyncAssignment {
                 Break
             
             } Else {
-                Write-Error $_
-                Break
+                Write-Error $_.Exception.Message -ErrorAction Stop
+                
 
             }
         } 
