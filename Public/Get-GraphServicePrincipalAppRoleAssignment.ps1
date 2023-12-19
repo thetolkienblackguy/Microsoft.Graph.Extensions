@@ -70,7 +70,7 @@ Function Get-GraphServicePrincipalAppRoleAssignment {
         # Create a new ordered hash table to store object properties
         $obj = [ordered] @{}
 
-        # Create the URI for the request
+        # Create identifier property for the request
         If ($PSCmdlet.ParameterSetName -eq "ServicePrincipalId") {
             $id = "/$($servicePrincipalId)"
             
