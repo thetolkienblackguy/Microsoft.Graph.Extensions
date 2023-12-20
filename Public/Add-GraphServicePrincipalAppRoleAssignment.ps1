@@ -9,9 +9,6 @@ Function Add-GraphServicePrincipalAppRoleAssignment {
         .PARAMETER ServicePrincipalId
         The ID of the service principal to add the app role assignment to.
 
-        .PARAMETER AppId
-        The App ID of the service principal to add the app role assignment to.
-
         .PARAMETER ObjectId
         The ID of the object to assign the app role to.
 
@@ -41,18 +38,15 @@ Function Add-GraphServicePrincipalAppRoleAssignment {
         0.0.1 - Alpha Release - 12/19/2023 - Gabe Delaney
     
     #>
-    [CmdletBinding(DefaultParameterSetName="ServicePrincipalId")]
+    [CmdletBinding()]
     [OutputType([System.Management.Automation.PSCustomObject])]
     param (
         [Parameter(
-            Mandatory=$true,ParameterSetName="ServicePrincipalId",ValueFromPipeline=$true,
-            ValueFromPipelineByPropertyName=$true
+            Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true
             
         )]
         [Alias('Id')]
         [guid]$ServicePrincipalId,
-        [Parameter(Mandatory=$true,ParameterSetName="AppId",ValueFromPipelineByPropertyName=$true)]
-        [guid]$AppId,
         [Parameter(Mandatory=$true)]
         [guid]$ObjectId,
         [Parameter(Mandatory=$true)]
@@ -63,18 +57,10 @@ Function Add-GraphServicePrincipalAppRoleAssignment {
     )
     Begin {
     } Process {
-        # Create identifier property for the request
-        If ($PSCmdlet.ParameterSetName -eq "ServicePrincipalId") {
-            $id = "/$($servicePrincipalId)"
-            
-        } Else {
-            $id = "(appId='$($appId)')"
-        
-        }
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
         $invoke_mg_params["Method"] = "POST"
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/servicePrincipals#$($id)/appRoleAssignedTo"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/servicePrincipals/$servicePrincipalId/appRoleAssignedTo"
         $invoke_mg_params["Body"] = @{}
         $invoke_mg_params["Body"]["principalId"] = $objectId
         $invoke_mg_params["Body"]["resourceId"] = $servicePrincipalId
