@@ -9,6 +9,9 @@ Function Add-GraphServicePrincipalAppRoleAssignment {
         .PARAMETER ServicePrincipalId
         The ID of the service principal to add the app role assignment to.
 
+        .PARAMETER AppId
+        The App ID of the service principal to add the app role assignment to.
+
         .PARAMETER ObjectId
         The ID of the object to assign the app role to.
 
@@ -38,30 +41,45 @@ Function Add-GraphServicePrincipalAppRoleAssignment {
         0.0.1 - Alpha Release - 12/19/2023 - Gabe Delaney
     
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName="ServicePrincipalId")]
+    [OutputType([System.Management.Automation.PSCustomObject])]
     param (
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
-        [Alias("Id")]
+        [Parameter(
+            Mandatory=$true,ParameterSetName="ServicePrincipalId",ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true
+            
+        )]
+        [Alias('Id')]
         [guid]$ServicePrincipalId,
+        [Parameter(Mandatory=$true,ParameterSetName="AppId",ValueFromPipelineByPropertyName=$true)]
+        [guid]$AppId,
         [Parameter(Mandatory=$true)]
         [guid]$ObjectId,
         [Parameter(Mandatory=$true)]
         [guid]$AppRoleId,
         [Parameter(Mandatory=$false)]
         [switch]$PassThru
+    
     )
     Begin {
+    } Process {
+        # Create identifier property for the request
+        If ($PSCmdlet.ParameterSetName -eq "ServicePrincipalId") {
+            $id = "/$($servicePrincipalId)"
+            
+        } Else {
+            $id = "(appId='$($appId)')"
+        
+        }
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
         $invoke_mg_params["Method"] = "POST"
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/servicePrincipals/$servicePrincipalId/appRoleAssignedTo"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/servicePrincipals#$($id)/appRoleAssignedTo"
         $invoke_mg_params["Body"] = @{}
         $invoke_mg_params["Body"]["principalId"] = $objectId
         $invoke_mg_params["Body"]["resourceId"] = $servicePrincipalId
         $invoke_mg_params["Body"]["appRoleId"] = $appRoleId
         $invoke_mg_params["OutputType"] = "PSObject"
-
-    } Process {
         Try {
             $r = Invoke-MgGraphRequest @invoke_mg_params
         
