@@ -69,8 +69,9 @@ Function Get-GraphServicePrincipalAppRoleAssignment {
 
         # Create a new ordered hash table to store object properties
         $obj = [ordered] @{}
-
-        # Create the URI for the request
+        
+    } Process {
+        # Create identifier property for the request
         If ($PSCmdlet.ParameterSetName -eq "ServicePrincipalId") {
             $id = "/$($servicePrincipalId)"
             
@@ -81,8 +82,6 @@ Function Get-GraphServicePrincipalAppRoleAssignment {
         # Create the URIs for the request
         $role_assigned_uri = "https://graph.microsoft.com/v1.0/servicePrincipals$($id)/appRoleAssignedTo"
         $app_role_uri = "https://graph.microsoft.com/v1.0/servicePrincipals$($id)?`$select=appRoles"
-        
-    } Process {
         Try {
             # Loop through app role assignments
             $principals = Do {
