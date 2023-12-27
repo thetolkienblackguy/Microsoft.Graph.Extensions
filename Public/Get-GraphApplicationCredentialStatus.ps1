@@ -121,9 +121,18 @@ Function Get-GraphApplicationCredentialStatus {
             }
             Foreach ($app in $app_list) {
                 # Get the credentials
-                $key = $app.KeyCredentials
-                $secret = $app.PasswordCredentials
+                If ($PSBoundParameters.ContainsKey("CertificatesOnly")) {
+                    $key = $app.KeyCredentials
+                
+                } ElseIf ($PSBoundParameters.ContainsKey("SecretsOnly")) {
+                    $secret = $app.PasswordCredentials
 
+                } Else {
+                    $key = $app.KeyCredentials
+                    $secret = $app.PasswordCredentials
+                
+                }
+                
                 # Iterate through the credentials and create an object for each
                 Foreach ($credential in @($key + $secret)) {
                     $end_date = $credential.EndDateTime
