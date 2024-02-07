@@ -30,6 +30,9 @@ Function New-GraphEnterpriseApplication {
         .PARAMETER NotificationEmailAddresses
         The notification email addresses of the new enterprise application. The default value is the email address of the current user.
 
+        .PARAMETER Logo
+        The logo of the new enterprise application.
+        
         .PARAMETER Description
         The description of the new enterprise application. The default value is "Enterprise Application created by New-GraphEnterpriseApplication".
 
