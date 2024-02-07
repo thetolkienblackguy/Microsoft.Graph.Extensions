@@ -95,6 +95,17 @@ Function New-GraphEnterpriseApplication {
         [Parameter(Mandatory=$false)]
         [string]$Description = "Enterprise Application created by New-GraphEnterpriseApplication",
         [Parameter(Mandatory=$false)]
+        [ValidateScript({
+            If (Test-Path $_) {
+                $true
+
+            } Else {
+                Throw "The file does not exist"
+            
+            }
+        })]
+        [system.io.fileinfo]$Logo,
+        [Parameter(Mandatory=$false)]
         [boolean]$AppRoleAssignmentRequired = $true,
         [Parameter(Mandatory=$false)]
         [boolean]$VisibleToUsers = $true,
@@ -108,6 +119,7 @@ Function New-GraphEnterpriseApplication {
         $PSDefaultParameterValues["Invoke-MgGraphRequest:OutputType"] = "PSObject"
         $PSDefaultParameterValues["ConvertTo-Json:Depth"] = 10
 
+        # Add the "HideApp" tag if the application is not visible to users
         If (!$visibleToUsers) {
             $tags += "HideApp"
 
@@ -141,21 +153,41 @@ Function New-GraphEnterpriseApplication {
         $new_sp_params["Uri"] = "https://graph.microsoft.com/v1.0/servicePrincipals"
 
     } Process {
-        # Create the new application
-        $r = Invoke-MgGraphRequest @new_app_params
+        Try {
+            # Create the new application
+            $r = Invoke-MgGraphRequest @new_app_params
+            $app_id = $r.AppId
+            $id = $r.Id
 
-        # Wait for the application to be created
-        Start-Sleep -Seconds 5
+            # Wait for the application to be created
+            Start-Sleep -Seconds 5
 
-        # Get the new application Id and add it to the service principal body
-        $new_sp_body["AppId"] = $r.AppId
+            # Get the new application Id and add it to the service principal body
+            $new_sp_body["AppId"] = $app_id
 
-        # Finish the Invoke-MgGraphRequest parameters
-        $new_sp_params["Body"] = $new_sp_body | ConvertTo-Json
+            # Finish the Invoke-MgGraphRequest parameters
+            $new_sp_params["Body"] = $new_sp_body | ConvertTo-Json
 
-        # Create the new service principal
-        $r = Invoke-MgGraphRequest @new_sp_params
+            # Create the new service principal
+            $r = Invoke-MgGraphRequest @new_sp_params
 
+            # Set the logo if specified
+            If ($logo) {
+                $set_logo_params = @{}
+                $set_logo_params["Uri"] = "https://graph.microsoft.com/v1.0/applications/$id/logo"
+                $set_logo_params["Method"] = "PUT"
+                $set_logo_params["Body"] = [System.IO.File]::ReadAllBytes((Get-Item $logo).FullName)
+                $set_logo_params["ContentType"] = "image/*"
+
+                # Set the logo
+                Invoke-MgGraphRequest @set_logo_params | Out-Null
+            
+            }
+        } Catch {
+            # Write the error message and stop the script
+            Write-Error -Message $_.Exception.Message -ErrorAction Stop
+            
+        }
     } End {
         # Pass the output object through if -PassThru is specified
         If ($passThru) {
