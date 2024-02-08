@@ -195,6 +195,7 @@ Function New-GraphEnterpriseApplication {
         # Pass the output object through if -PassThru is specified
         If ($passThru) {
             $r
+        
         }
     }
 }
