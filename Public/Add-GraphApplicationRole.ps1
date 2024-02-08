@@ -99,7 +99,6 @@
             # Create the app role array
             $app_role_array = [System.Collections.ArrayList] @()
 
-
         } Process {
             # Check the parameter set name, if it is input object, then add the input object
             If ($PSCmdlet.ParameterSetName -eq "AppRoles") {
