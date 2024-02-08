@@ -93,9 +93,6 @@
         
         )
         Begin {
-            # Create the output object
-            $output_obj = @{}
-
             # Create the app role table
             $app_role_table = @{}
 
@@ -153,11 +150,11 @@
                 $invoke_mg_params["Method"] = "PATCH"
                 $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/applications/$applicationId"
                 $invoke_mg_params["Body"] = $json_body
-                $invoke_mg_params["OutputType"] = "HttpResponseMessage"
+                $invoke_mg_params["OutputType"] = "PSObject"
                 # Try to invoke the request
                 Try {
                     # Invoke the request
-                    $r = Invoke-MgGraphRequest @invoke_mg_params
+                    Invoke-MgGraphRequest @invoke_mg_params | Out-Null
 
                 } Catch {
                     Write-Error $_.Exception.Message -ErrorAction Stop
@@ -166,8 +163,7 @@
             }
         } End { 
             If ($passThru) {
-                $output_obj["StatusCode"] = [int][system.net.httpstatuscode]::$($r.StatusCode)
-                [pscustomobject]$output_obj
+                Get-GraphApplicationRole -ApplicationId $applicationId
             
             }
         }
