@@ -51,6 +51,16 @@ Function New-GraphEnterpriseApplication {
         .EXAMPLE
         New-GraphEnterpriseApplication -DisplayName "MyApp" -SignInAudience "AzureADMyOrg" -PreferredSingleSignOnMode "notSupported" -Tags "WindowsAzureActiveDirectoryCustomSingleSignOnApplication", "WindowsAzureActiveDirectoryIntegratedApp" -LoginUrl "https://myapp.com/login" -LogoutUrl "https://myapp.com/logout" -ReplyUrls "https://myapp.com/reply"
 
+        .INPUTS
+        String
+        Uri
+        System.IO.FileInfo
+        Boolean
+        System.Management.Automation.SwitchParameter
+
+        .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
         .NOTES
         Author: Gabriel Delaney | gdelaney@phzconsulting.com
         Date: 02/06/2024
