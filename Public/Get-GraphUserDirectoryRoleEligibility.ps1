@@ -74,11 +74,11 @@ Function Get-GraphUserDirectoryRoleEligibility {
         }
  
         # Invoke-MgGraphRequest parameters
-        $invoke_mggraph_params = @{}
-        $invoke_mggraph_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleEligibilityScheduleInstances?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
-        $invoke_mggraph_params["Method"] = "GET"
-        $invoke_mggraph_params["Headers"] = @{}
-        $invoke_mggraph_params["Headers"]["ConsistencyLevel"] = "eventual"
+        $invoke_graph_params = @{}
+        $invoke_graph_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleEligibilityScheduleInstances?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
+        $invoke_graph_params["Method"] = "GET"
+        $invoke_graph_params["Headers"] = @{}
+        $invoke_graph_params["Headers"]["ConsistencyLevel"] = "eventual"
 
         # Add-Member parameters
         $add_member_params = @{}
@@ -90,9 +90,9 @@ Function Get-GraphUserDirectoryRoleEligibility {
 
         # Getting the role assignments
         $roles = Do {
-            $r = (Invoke-MgGraphRequest @invoke_mggraph_params)
+            $r = (Invoke-MgGraphRequest @invoke_graph_params)
             $r.Value
-            $invoke_mggraph_params["Uri"] = $r."@odata.nextLink"
+            $invoke_graph_params["Uri"] = $r."@odata.nextLink"
         
         # Looping through the results until there are no more results
         } Until (!$r."@odata.nextLink")
