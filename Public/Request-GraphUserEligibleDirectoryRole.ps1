@@ -1,0 +1,139 @@
+Function Request-GraphUserEligibleDirectoryRole {
+    <#
+        .DESCRIPTION
+        Requests a directory role for a user
+
+        .SYNOPSIS
+        Requests a directory role for a user
+
+        .PARAMETER UserId
+        Specifies the UserId
+
+        .PARAMETER RoleDefinitionId
+        Specifies the RoleDefinitionId
+
+        .PARAMETER Justification
+        Specifies the Justification
+
+        .PARAMETER StartDateTime
+        Specifies the StartDateTime
+
+        .EXAMPLE
+        Request-GraphUserEligibleDirectoryRole -UserId "jdoe@contoso.com" -RoleDefinitionId "00000000-0000-0000-0000-000000000000" -Justification "Requesting access to the role" -StartDateTime "2024-05-29T00:00:00Z" -Expiration "PT4H" -Action "SelfActivate" -DirectoryScopeId "/" -PassThru
+
+        .EXAMPLE
+        Request-GraphUserEligibleDirectoryRole -UserId "jdoe@cont
+
+        .INPUTS
+        System.String
+
+        .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+        .NOTES
+        Author: Gabriel Delaney
+        Date: 05/29/2024
+        Version: 0.0.1
+        Name: Request-GraphUserEligibleDirectoryRole
+
+        Version History:
+        0.0.1 - Original Release - Gabriel Delaney - 05/29/2024
+
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Management.Automation.PSCustomObject])]
+    param (
+        [Parameter(Mandatory=$true)]
+        [Alias("PrincipalId")]
+        [string]$UserId,
+        [Parameter(Mandatory=$true)]
+        [Alias("Id")]
+        [string]$RoleDefinitionId,
+        [Parameter(Mandatory=$false)]
+        [string]$Justification = (Read-Host "Please provide a justification for this request"),
+        [Parameter(Mandatory=$false)]
+        [string]$StartDateTime = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"),
+        [Parameter(Mandatory=$false)]
+        [ValidateSet(
+            "PT30M", "PT1H", "PT1H30M", "PT2H", "PT2H30M", "PT3H", "PT3H30M", "PT4H", "PT4H30M", 
+            "PT5H", "PT5H30M", "PT6H", "PT6H30M", "PT7H", "PT7H30M", "PT8H"
+
+        )]
+        [string]$Expiration = "PT4H",
+        [Parameter(Mandatory=$false)]
+        [ValidateSet(
+            "SelfActivate", "SelfDeactivate", "SelfExtend", "SelfRenew"
+            
+        )]
+        [string]$Action = "SelfActivate",
+        [Parameter(Mandatory=$false)]
+        [string]$DirectoryScopeId = "/",
+        [Parameter(Mandatory=$false)]
+        [switch]$PassThru
+    
+    )    
+    Begin {
+        # Setting the error action preference
+        $ErrorActionPreference = "Stop"
+
+        # Setting the function name
+        $function = $MyInvocation.MyCommand.Name
+        
+    } Process {
+        # Get-MgUser 
+        $mg_user = Get-MgUser -filter "Id eq '$userId'"
+        If (!$mg_user) {
+            # Setting the error details
+            $error_details_params = @{}
+            $error_details_params["Message"] = "Resource '$userId' does not exist or one of its queried reference-property objects are not present"
+            $error_details_params["Identity"] = $userId
+            $error_details_params["Function"] = $function
+            $error_details_params["Category"] = "ObjectNotFound"
+            $error_details_params["CategoryTargetType"] = "Microsoft.Graph.User"
+            $write_error_params = Set-ErrorDetails @error_details_params
+
+            # Setting the error message
+            Write-Error @write_error_params
+            Break
+
+        } Else {
+            $id = $mg_user.Id
+        
+        }
+        # Create the body for the request
+        $body = @{}
+        $body["PrincipalId"] = $id
+        $body["RoleDefinitionId"] = $roleDefinitionId
+        $body["Justification"] = $justification
+        $body["DirectoryScopeId"] = $directoryScopeId
+        $body["Action"] = $action
+        $body["ScheduleInfo"] = @{}
+        $body["ScheduleInfo"]["StartDateTime"] = $startDateTime
+        $body["ScheduleInfo"]["Expiration"] = @{}
+        $body["ScheduleInfo"]["Expiration"]["Type"] = "AfterDuration"
+        $body["ScheduleInfo"]["Expiration"]["Duration"] = $expiration
+
+        # Invoke-MgGraphRequest parameters
+        $invoke_mggraph_params = @{}
+        $invoke_mggraph_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignmentScheduleRequests"
+        $invoke_mggraph_params["Method"] = "Post"
+        $invoke_mggraph_params["Body"] = $body | ConvertTo-Json
+        $invoke_mggraph_params["OutputType"] = "PSObject"
+    
+        Try {
+            # Invoke the request
+            $r = Invoke-MgGraphRequest @invoke_mggraph_params
+
+        } Catch {
+            # Write the error
+            Write-Error $_ -ErrorAction Stop
+
+        }
+    } End {
+        # Return the output if the -PassThru switch is used
+        If ($passThru) {
+            $r
+        
+        } 
+    }
+}
