@@ -19,7 +19,7 @@ Function Get-GraphApplicationRole {
         Get-MgApplication -ApplicationId "00000000-0000-0000-0000-000000000000" | Get-GraphApplicationRole
 
         .EXAMPLE
-        Get-GraphApplicationRole -ApplicationId "00000000-0000-0000-0000-000000000000" -OutputType "JSON"
+        Get-GraphApplicationRole -ApplicationId "00000000-0000-0000-0000-000000000000" -OutputType "PSObject"
 
         .INPUTS
         System.String
