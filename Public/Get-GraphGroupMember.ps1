@@ -63,6 +63,7 @@ Function Get-GraphGroupMember {
         # Set the endpoint and oData type based on the parameters
         $end_point = If ($recursive) {
             "transitiveMembers"
+        
         } Else {
             "members"
         }
