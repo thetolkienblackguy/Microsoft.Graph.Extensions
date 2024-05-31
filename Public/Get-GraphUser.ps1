@@ -34,12 +34,12 @@ Function Get-GraphUser {
 
         .NOTES
         Author: Gabriel Delaney
-        Date: 00/00/2024
+        Date: 05/30/2024
         Version: 0.0.1
-        Name: New-FunctionTemplate
+        Name: Get-GraphUser
 
         Version History:
-        0.0.1 - Alpha Release - 00/00/2024 - Gabriel Delaney
+        0.0.1 - Alpha Release - 05/30/2024 - Gabriel Delaney
 
     #>
     [CmdletBinding(DefaultParameterSetName="UserId")]
