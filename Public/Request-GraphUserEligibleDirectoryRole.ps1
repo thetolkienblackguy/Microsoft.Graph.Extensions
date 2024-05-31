@@ -104,15 +104,15 @@ Function Request-GraphUserEligibleDirectoryRole {
         $body["ScheduleInfo"]["Expiration"]["Duration"] = $expiration
 
         # Invoke-MgGraphRequest parameters
-        $invoke_mggraph_params = @{}
-        $invoke_mggraph_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignmentScheduleRequests"
-        $invoke_mggraph_params["Method"] = "Post"
-        $invoke_mggraph_params["Body"] = $body | ConvertTo-Json
-        $invoke_mggraph_params["OutputType"] = "PSObject"
+        $invoke_mg_params = @{}
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignmentScheduleRequests"
+        $invoke_mg_params["Method"] = "Post"
+        $invoke_mg_params["Body"] = $body | ConvertTo-Json
+        $invoke_mg_params["OutputType"] = "PSObject"
     
         Try {
             # Invoke the request
-            $r = Invoke-MgGraphRequest @invoke_mggraph_params
+            $r = Invoke-MgGraphRequest @invoke_mg_params
 
         } Catch {
             # Write the error
