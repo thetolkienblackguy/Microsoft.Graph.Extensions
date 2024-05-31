@@ -52,7 +52,7 @@ Function Request-GraphUserEligibleDirectoryRole {
         [Parameter(Mandatory=$false)]
         [string]$Justification = (Read-Host "Please provide a justification for this request"),
         [Parameter(Mandatory=$false)]
-        [string]$StartDateTime = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"),
+        [UtcDateTime]$StartDateTime = (Get-Date),
         [Parameter(Mandatory=$false)]
         [ValidateSet(
             "PT30M", "PT1H", "PT1H30M", "PT2H", "PT2H30M", "PT3H", "PT3H30M", "PT4H", "PT4H30M", 
@@ -76,28 +76,18 @@ Function Request-GraphUserEligibleDirectoryRole {
         # Setting the error action preference
         $ErrorActionPreference = "Stop"
 
-        # Setting the function name
-        $function = $MyInvocation.MyCommand.Name
+        # Set the default parameter values for Write-Error
+        $PSDefaultParameterValues = @{}
+        $PSDefaultParameterValues["Write-Error:ErrorAction"] = "Stop"
         
     } Process {
-        # Get-MgUser 
-        $mg_user = Get-MgUser -filter "Id eq '$userId'"
-        If (!$mg_user) {
-            # Setting the error details
-            $error_details_params = @{}
-            $error_details_params["Message"] = "Resource '$userId' does not exist or one of its queried reference-property objects are not present"
-            $error_details_params["Identity"] = $userId
-            $error_details_params["Function"] = $function
-            $error_details_params["Category"] = "ObjectNotFound"
-            $error_details_params["CategoryTargetType"] = "Microsoft.Graph.User"
-            $write_error_params = Set-ErrorDetails @error_details_params
+        # Get-GraphUser
+        Try {
+            $id = (Get-GraphUser -UserId $userId).Id
 
-            # Setting the error message
-            Write-Error @write_error_params
-            Break
-
-        } Else {
-            $id = $mg_user.Id
+        } Catch {
+            # Write the error and stop the script if an error occurs
+            Write-Error $_ -ErrorAction Stop
         
         }
         # Create the body for the request
