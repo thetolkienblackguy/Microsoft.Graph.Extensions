@@ -71,28 +71,18 @@ Function Set-GraphUserCertificateUserIds {
 
     )
     Begin {
+        # Set the error action preference to stop
         $ErrorActionPreference = "Stop"
+
+        # Set the default parameter values for Write-Error
+        $PSDefaultParameterValues = @{}
+        $PSDefaultParameterValues["Write-Error:ErrorAction"] = "Stop"
+
         # Create an array of properties to get from the user object
         $properties = @(
             "UserPrincipalName", "Id", "authorizationInfo"
 
         )
-
-        # Get-MgUser paramaters
-        $get_mguser_params = @{}
-        $get_mguser_params["UserId"] = $UserId
-        $get_mguser_params["Property"] = $properties
-        $get_mguser_params["ErrorAction"] = "SilentlyContinue"
-
-        $user = Get-MgUser @get_mguser_params
-        If (!$user) {
-            Throw "User $userId not found"
-        
-        } Else {
-            $id = $user.Id
-
-        }
-
         # Create a hashtable to map the certificate mapping to the prefix, friendly name, and pattern
         # Might make more sense as function or class
         $extension_table = [System.Collections.IDictionary] @{}
@@ -115,6 +105,17 @@ Function Set-GraphUserCertificateUserIds {
         
         }
     } Process {
+        $get_user_params = @{}
+        $get_user_params["UserId"] = $userId
+        $get_user_params["Select"] = $properties
+        Try {
+            $user = Get-GraphUser @get_user_params
+            $id = $user.Id
+
+        } Catch {
+            Write-Error -Message $_ -ErrorAction Stop
+
+        }
         Try {
             # If the parameter set is "Value", check if the value matches the prefix. If not, add the prefix to the value
             If ($PSCmdlet.ParameterSetName -eq "Value") {
@@ -136,7 +137,7 @@ Function Set-GraphUserCertificateUserIds {
                             $value = "$($prefix)$($matches[1].Trim())"
 
                         } Else {
-                            Write-Error "Failed to update the CertificateUserIds for $userId. An extension with the friendly name '$friendly_name' doesn't appear to be on the provided certificate"
+                            Write-Error -Message "Failed to update the CertificateUserIds for $userId. An extension with the friendly name '$friendly_name' doesn't appear to be on the provided certificate"
 
                         }
                     } Else {
@@ -148,7 +149,7 @@ Function Set-GraphUserCertificateUserIds {
                 
                 }
                 If (!$value) {
-                    Write-Error "Failed to get the certificate extension data for certificate $certificatePath"
+                    Write-Error -Message "Failed to get the certificate extension data for certificate $certificatePath" 
                 
                 }
             }
@@ -162,19 +163,16 @@ Function Set-GraphUserCertificateUserIds {
 
                 }
             }
-
             # If the new value is not already in the array, add it
             If ($certificate_user_ids -notcontains $value) {
                 [void]$certificate_user_ids.Add($value)
 
             }
-
             # If the array has more than 5 values, throw an error
             If ($certificate_user_ids.Count -gt 5) {
-                Write-Error "User $userId already has 5 certificate user ids. Please remove one before adding another"
+                Write-Error -Message "User $userId already has 5 certificate user ids. Please remove one before adding another"
 
             }
-
             # Create the authorization info object and add the certificate user id
             $auth_info = @{}
             $auth_info["authorizationInfo"] = @{}
@@ -187,7 +185,7 @@ Function Set-GraphUserCertificateUserIds {
             $invoke_mg_params["Body"] = $auth_info
 
         } Catch {
-            Write-Error "Failed to update the CertificateUserIds to $value for user $userId due to the following error: $($_.Exception.Message)"
+            Write-Error =<Message "Failed to update the CertificateUserIds to $value for user $userId due to the following error: $($_.Exception.Message)"
         
         }
 
@@ -198,21 +196,19 @@ Function Set-GraphUserCertificateUserIds {
                 Write-Verbose "Updated the CertificateUserIds to $value for user $userId"
             
             } Catch {
-                Write-Error "Failed to update the CertificateUserIds to $value for user $userId due to the following error: $($_.Exception.Message)"
+                Write-Error -Message "Failed to update the CertificateUserIds to $value for user $userId due to the following error: $($_.Exception.Message)"
             
             }
         }
     } End {
+        # Return the user object if -PassThru is specified
         If ($passThru) {
-            Return Get-MgUser @get_mguser_params | Select-Object UserPrincipalName, Id, @{
+            Get-GraphUser @get_mguser_params | Select-Object UserPrincipalName, Id, @{
                 Name="CertificateUserIds";Expression={
                     $_.authorizationInfo.certificateUserIds    
                 
                 }
             }
-        } Else {
-            Return
-
-        }
+        } 
     }
 }
