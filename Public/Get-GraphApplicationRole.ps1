@@ -19,15 +19,13 @@ Function Get-GraphApplicationRole {
         Get-MgApplication -ApplicationId "00000000-0000-0000-0000-000000000000" | Get-GraphApplicationRole
 
         .EXAMPLE
-        Get-GraphApplicationRole -ApplicationId "00000000-0000-0000-0000-000000000000" -OutputType "PSObject"
+        Get-GraphApplicationRole -ApplicationId "00000000-0000-0000-0000-000000000000"
 
         .INPUTS
         System.String
 
         .OUTPUTS
-        System.Hashtable
         System.Management.Automation.PSCustomObject
-        System.String
 
         .NOTES
         Author: Gabriel Delaney | gdelaney@phzconsulting.com
@@ -44,13 +42,7 @@ Function Get-GraphApplicationRole {
     param (
         [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [Alias("Id")]
-        [guid]$ApplicationId,
-        [Parameter(Mandatory=$false)]
-        [ValidateSet(
-            "PSObject","Hashtable"
-        
-        )]
-        [string]$OutputType = "PSObject"
+        [guid]$ApplicationId
     
     )
     Begin {
@@ -59,7 +51,7 @@ Function Get-GraphApplicationRole {
         $invoke_mg_params = @{}
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/applications/$($applicationId)?`$select=appRoles"
-        $invoke_mg_params["OutputType"] = $outputType
+        $invoke_mg_params["OutputType"] = "PSObject "
         
         # Invoke-MgGraphRequest
         Try {
