@@ -38,7 +38,7 @@ Function Get-GraphManagedDeviceUserLastLogon {
         Name: Get-GraphManagedDeviceUserLastLogon
 
         Version History:
-        0.0.1 - Original Release - Gabriel Delaney - 05/29/2024
+        0.0.1 - Alpha Release - Gabriel Delaney - 05/29/2024
         
     #>
     [CmdletBinding(DefaultParameterSetName="DeviceId")]
@@ -139,7 +139,7 @@ Function Get-GraphManagedDeviceUserLastLogon {
         # This seems inelegant, but it works
         $output_obj = Foreach ($u in $r.UsersLoggedOn) {
             # Get the user principal name for the userId
-            $r.UserPrincipalName = (Get-MgUser -UserId $u.UserId).UserPrincipalName
+            $r.UserPrincipalName = (Get-GraphUser -UserId $u.UserId).UserPrincipalName
 
             # Get the last logon date time for the userId if it exists
             $r.LastLogonDateTime = If ($u.LastLogonDateTime) {
