@@ -31,9 +31,10 @@ Function Get-GraphUserDirectoryRoleAssignments {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.PSCustomObject])]
     param (
-        [Parameter(Mandatory=$true)]
-        [string]$UserId
-    
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Alias("Id","UserPrincipalName","UPN")]
+        [string[]]$UserId
+
     )
     Begin {
         # Setting the error action preference
@@ -42,42 +43,28 @@ Function Get-GraphUserDirectoryRoleAssignments {
         $PSDefaultParameterValues["Add-Member:MemberType"] = "NoteProperty"
         $PSDefaultParameterValues["Add-Member:Force"] = $true
 
-        # Setting the function name
-        $function = $MyInvocation.MyCommand.Name
-
         # Properties to select
         $role_def_properties = @(
             "DisplayName","Id","Description"
 
         )
     } Process {
-        # Get-MgUser 
-        $mg_user = Get-MgUser -filter "Id eq '$userId'"
-        If (!$mg_user) {
-            # Setting the error details
-            $error_details_params = @{}
-            $error_details_params["Message"] = "Resource '$userId' does not exist or one of its queried reference-property objects are not present"
-            $error_details_params["Identity"] = $userId
-            $error_details_params["Function"] = $function
-            $error_details_params["Category"] = "ObjectNotFound"
-            $error_details_params["CategoryTargetType"] = "Microsoft.Graph.User"
-            $write_error_params = Set-ErrorDetails @error_details_params
+        # Get-GraphUser
+        Try {
+            $id = (Get-GraphUser -UserId $userId).Id
 
-            # Setting the error message
-            Write-Error @write_error_params
-            Break
-
-        } Else {
-            $id = $mg_user.Id
+        } Catch {
+            # Write the error and stop the script if an error occurs
+            Write-Error $_ -ErrorAction Stop
         
         }
  
         # Invoke-MgGraphRequest parameter
-        $invoke_mggraph_params = @{}
-        $invoke_mggraph_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignments?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
-        $invoke_mggraph_params["Method"] = "GET"
-        $invoke_mggraph_params["Headers"] = @{}
-        $invoke_mggraph_params["Headers"]["ConsistencyLevel"] = "eventual"
+        $invoke_mg_params = @{}
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignments?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
+        $invoke_mg_params["Method"] = "GET"
+        $invoke_mg_params["Headers"] = @{}
+        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
 
         # Add-Member parameters
         $add_member_params = @{}
@@ -90,14 +77,20 @@ Function Get-GraphUserDirectoryRoleAssignments {
         $role_assignments = [System.Collections.ArrayList]::new()
         
         # Getting the role assignments
-        $roles = Do {
-            $r = (Invoke-MgGraphRequest @invoke_mggraph_params)
-            $r.Value
-            $invoke_mggraph_params["Uri"] = $r."@odata.nextLink"
-        
-        # Looping through the results until there are no more results
-        } Until (!$r."@odata.nextLink")
+        Try {
+            $roles = Do {
+                $r = (Invoke-MgGraphRequest @invoke_mg_params)
+                $r.Value
+                $invoke_mg_params["Uri"] = $r."@odata.nextLink"
+            
+            # Looping through the results until there are no more results
+            } Until (!$r."@odata.nextLink")
 
+        } Catch {
+            # Write the error and stop the script if an error occurs
+            Write-Error $_ -ErrorAction Stop
+
+        }
         Foreach ($role in $roles) {
             # Getting the role
             $role_def = $role.roleDefinition | Select-Object $role_def_properties
@@ -114,7 +107,6 @@ Function Get-GraphUserDirectoryRoleAssignments {
         $role_assignments
     
     } End {
-
 
     }
 }
