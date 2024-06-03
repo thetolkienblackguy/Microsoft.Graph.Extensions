@@ -15,6 +15,11 @@ Function Get-GraphUser {
         .PARAMETER Select
         The properties to be selected for the user information. The default properties are DisplayName, Id, Mail, and UserPrincipalName.
 
+        .PARAMETER All
+        Retrieve all users.
+
+        .PARAMETER Top
+        The number of results to return. The default value is 999.
 
         .EXAMPLE
         Get-GraphUser -UserId "12345678-1234-1234-1234-123456789012"
@@ -27,7 +32,9 @@ Function Get-GraphUser {
 
         .INPUTS
         System.String
-        
+        System.String[]
+        System.Int32
+        System.Automation.SwitchParameter        
 
         .OUTPUTS
         System.Object
