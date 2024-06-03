@@ -47,9 +47,22 @@ Function Get-GraphUserDirectoryRoleEligibility {
 
         # Properties to select
         $role_def_properties = @(
-            "DisplayName","Id","Description"
+            "DisplayName","Id"
 
-        )       
+        )
+
+        # Invoke-MgGraphRequest parameters
+        $invoke_mg_params = @{}
+        $invoke_mg_params["Method"] = "GET"
+        $invoke_mg_params["Headers"] = @{}
+        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
+        $invoke_mg_params["OutputType"] = "PSObject"
+
+        # Add-Member parameters
+        $add_member_params = @{}
+        $add_member_params["Name"] = "AssignmentState"
+        $add_member_params["Value"] = "Eligible"
+
     } Process {
         # Get-GraphUser
         Try {
@@ -60,17 +73,8 @@ Function Get-GraphUserDirectoryRoleEligibility {
             Write-Error $_ -ErrorAction Stop
         
         }
-        # Invoke-MgGraphRequest parameters
-        $invoke_mg_params = @{}
+        # Setting the URI
         $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleEligibilityScheduleInstances?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
-        $invoke_mg_params["Method"] = "GET"
-        $invoke_mg_params["Headers"] = @{}
-        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
-
-        # Add-Member parameters
-        $add_member_params = @{}
-        $add_member_params["Name"] = "AssignmentState"
-        $add_member_params["Value"] = "Eligible"
 
         # Creating an array list to store the role assignments
         $role_assignments = [System.Collections.ArrayList]::new()
