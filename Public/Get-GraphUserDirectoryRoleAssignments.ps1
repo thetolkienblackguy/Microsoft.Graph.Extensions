@@ -48,6 +48,19 @@ Function Get-GraphUserDirectoryRoleAssignments {
             "DisplayName","Id","Description"
 
         )
+        # Invoke-MgGraphRequest parameter
+        $invoke_mg_params = @{}
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignments?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
+        $invoke_mg_params["Method"] = "GET"
+        $invoke_mg_params["Headers"] = @{}
+        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
+        $invoke_mg_params["OutputType"] = "PSObject"
+
+        # Add-Member parameters
+        $add_member_params = @{}
+        $add_member_params["Name"] = "AssignmentState"
+        $add_member_params["Value"] = "Assigned"
+        
     } Process {
         # Get-GraphUser
         Try {
@@ -60,18 +73,7 @@ Function Get-GraphUserDirectoryRoleAssignments {
         }
  
         # Invoke-MgGraphRequest parameter
-        $invoke_mg_params = @{}
         $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignments?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
-        $invoke_mg_params["Method"] = "GET"
-        $invoke_mg_params["Headers"] = @{}
-        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
-
-        # Add-Member parameters
-        $add_member_params = @{}
-        $add_member_params["MemberType"] = "NoteProperty"
-        $add_member_params["Name"] = "AssignmentState"
-        $add_member_params["Value"] = "Assigned"
-        $add_member_params["Force"] = $true
 
         # Creating an array list to store the role assignments
         $role_assignments = [System.Collections.ArrayList]::new()
