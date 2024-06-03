@@ -64,7 +64,9 @@ Function Get-GraphUserDirectoryRoleAssignments {
     } Process {
         # Get-GraphUser
         Try {
-            $id = (Get-GraphUser -UserId $userId).Id
+            $mg_user = Get-GraphUser -UserId $userId
+            $id = $mg_user.Id
+            $upn = $mg_user.UserPrincipalName
 
         } Catch {
             # Write the error and stop the script if an error occurs
@@ -93,6 +95,9 @@ Function Get-GraphUserDirectoryRoleAssignments {
             Write-Error $_ -ErrorAction Stop
 
         }
+        # Adding the user principal name to the roles
+        $roles | Add-Member -Name UserPrincipalName -Value $upn
+
         Foreach ($role in $roles) {
             # Getting the role
             $role_def = $role.roleDefinition | Select-Object $role_def_properties
