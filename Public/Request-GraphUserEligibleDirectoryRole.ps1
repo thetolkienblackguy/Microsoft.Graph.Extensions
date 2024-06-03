@@ -40,7 +40,7 @@ Function Request-GraphUserEligibleDirectoryRole {
         0.0.1 - Original Release - Gabriel Delaney - 05/29/2024
 
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([System.Management.Automation.PSCustomObject])]
     param (
         [Parameter(Mandatory=$true)]
@@ -109,15 +109,16 @@ Function Request-GraphUserEligibleDirectoryRole {
         $invoke_mg_params["Method"] = "Post"
         $invoke_mg_params["Body"] = $body | ConvertTo-Json
         $invoke_mg_params["OutputType"] = "PSObject"
-    
-        Try {
-            # Invoke the request
-            $r = Invoke-MgGraphRequest @invoke_mg_params
+        If ($PSCmdlet.ShouldProcess($userId, "Request-GraphUserEligibleDirectoryRole")) {
+            Try {
+                # Invoke the request
+                $r = Invoke-MgGraphRequest @invoke_mg_params
 
-        } Catch {
-            # Write the error
-            Write-Error -Message $_ 
+            } Catch {
+                # Write the error
+                Write-Error -Message $_ 
 
+            }
         }
     } End {
         # Return the output if the -PassThru switch is used
