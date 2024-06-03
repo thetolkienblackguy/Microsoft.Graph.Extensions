@@ -32,7 +32,7 @@ Function Get-GraphManagedDeviceUserLastLogon {
         System.Management.Automation.PSCustomObject
 
         .NOTES
-        Author: Gabriel Delaney
+        Author: Gabriel Delaney | gdelaney@phzconsulting.com
         Date: 05/29/2024
         Version: 0.0.1
         Name: Get-GraphManagedDeviceUserLastLogon
@@ -49,7 +49,7 @@ Function Get-GraphManagedDeviceUserLastLogon {
             
         )]
         [Alias("Id")]
-        [string]$DeviceId,
+        [string[]]$DeviceId,
         [Parameter(
             Mandatory=$true, ValueFromPipelineByPropertyName=$true, ParameterSetName="DeviceName"
             
@@ -80,6 +80,9 @@ Function Get-GraphManagedDeviceUserLastLogon {
             $select += "UsersLoggedOn"
         
         }
+
+        # Set the function name
+        $function = $MyInvocation.MyCommand.Name
     } Process {
         Try {
             # Get the device id if the device name is provided
@@ -92,7 +95,7 @@ Function Get-GraphManagedDeviceUserLastLogon {
                     # Setting the error details
                     $error_details_params = @{}
                     $error_details_params["Message"] = "Resource '$deviceName' does not exist or one of its queried reference-property objects are not present"
-                    $error_details_params["Identity"] = $DeviceName
+                    $error_details_params["Identity"] = $deviceName
                     $error_details_params["Function"] = $function
                     $error_details_params["Category"] = "ObjectNotFound"
                     $error_details_params["CategoryTargetType"] = "Microsoft.Graph.managedDevice"
@@ -159,9 +162,10 @@ Function Get-GraphManagedDeviceUserLastLogon {
             $r | Select-Object -ExcludeProperty UsersLoggedOn,"@odata.context"
             
         }
-    } End {
         # Return the output object
         $output_obj 
+
+    } End {
 
     }
 }
