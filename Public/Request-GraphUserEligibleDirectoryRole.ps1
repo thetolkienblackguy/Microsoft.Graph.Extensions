@@ -98,7 +98,7 @@ Function Request-GraphUserEligibleDirectoryRole {
         $body["DirectoryScopeId"] = $directoryScopeId
         $body["Action"] = $action
         $body["ScheduleInfo"] = @{}
-        $body["ScheduleInfo"]["StartDateTime"] = $startDateTime
+        $body["ScheduleInfo"]["StartDateTime"] = $startDateTime.ToString()
         $body["ScheduleInfo"]["Expiration"] = @{}
         $body["ScheduleInfo"]["Expiration"]["Type"] = "AfterDuration"
         $body["ScheduleInfo"]["Expiration"]["Duration"] = $expiration
