@@ -95,9 +95,7 @@ Function Get-GraphUserDirectoryRoleAssignments {
             Write-Error $_ -ErrorAction Stop
 
         }
-        # Adding the user principal name to the roles
-        $roles | Add-Member -Name UserPrincipalName -Value $upn
-
+        # Looping through the roles
         Foreach ($role in $roles) {
             # Getting the role
             $role_def = $role.roleDefinition | Select-Object $role_def_properties
@@ -109,6 +107,9 @@ Function Get-GraphUserDirectoryRoleAssignments {
         }
         # Adding the assignment state to the role assignments
         $role_assignments | Add-Member @add_member_params
+
+        # Adding the user principal name to the roles
+        $role_assignments | Add-Member -Name UserPrincipalName -Value $upn
 
         # Returning the role assignments
         $role_assignments
