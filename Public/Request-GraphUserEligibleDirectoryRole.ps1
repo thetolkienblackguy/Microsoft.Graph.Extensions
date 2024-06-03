@@ -31,7 +31,7 @@ Function Request-GraphUserEligibleDirectoryRole {
         System.Management.Automation.PSCustomObject
 
         .NOTES
-        Author: Gabriel Delaney
+        Author: Gabriel Delaney | gdelaney@phzconsulting.com
         Date: 05/29/2024
         Version: 0.0.1
         Name: Request-GraphUserEligibleDirectoryRole
@@ -87,7 +87,7 @@ Function Request-GraphUserEligibleDirectoryRole {
 
         } Catch {
             # Write the error and stop the script if an error occurs
-            Write-Error $_ -ErrorAction Stop
+            Write-Error -Message $_ 
         
         }
         # Create the body for the request
@@ -116,7 +116,7 @@ Function Request-GraphUserEligibleDirectoryRole {
 
         } Catch {
             # Write the error
-            Write-Error $_ -ErrorAction Stop
+            Write-Error -Message $_ 
 
         }
     } End {
