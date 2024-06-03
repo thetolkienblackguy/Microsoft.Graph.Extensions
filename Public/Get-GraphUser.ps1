@@ -56,11 +56,18 @@ Function Get-GraphUser {
         [string[]]$UserId,
         [Parameter(Mandatory=$true,ParameterSetName="Filter")]
         [string]$Filter,
+        [Parameter(Mandatory=$true,ParameterSetName="All")]
+        [switch]$All,
         [Parameter(Mandatory=$false)]
         [string[]]$Select = @(
             "DisplayName","Id","Mail","UserPrincipalName"
             
-        )
+        ),
+        [Parameter(Mandatory=$false,ParameterSetName="Filter")]
+        [Parameter(Mandatory=$false,ParameterSetName="All")]
+        [ValidateRange(1,999)]
+        [int]$Top
+    
     )
     Begin {
         # Setting the error action preference
@@ -69,28 +76,38 @@ Function Get-GraphUser {
         # Setting the function name
         $function = $MyInvocation.MyCommand.Name
 
+        # Setting the users array
+        $users = [System.Collections.ArrayList] @()
+
     } Process {
         # Setting the filter based on the parameter set
         If ($PSCmdlet.ParameterSetName -eq "UserId") {
             $filter = "id eq '$userId'"
         
-        } 
+        } ElseIf ($PSCmdlet.ParameterSetName -eq "All") {
+            $filter = $null
+
+        }
+        If ($top) {
+            $top_str = "&`$top=$top"
+
+        }
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/users?`$count=true&`$filter=$filter&`$select=$($select -join ",")"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/users?`$count=true&`$filter=$filter&`$select=$($select -join ",")$($top_str)"
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
-        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"#>
+        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
         $invoke_mg_params["OutputType"] = "PSObject"
 
         Try {
-            $users = Do {
+            Do {
                 $r = (Invoke-MgGraphRequest @invoke_mg_params)
-                $r.Value
+                [void]$users.AddRange(@($r.Value))
                 $invoke_mg_params["Uri"] = $r."@odata.nextLink"
             
             # Looping through the results until there are no more results
-            } Until (!$r."@odata.nextLink")
+            } Until (!$r."@odata.nextLink" -or @($users).Count -le $top)
 
         } Catch {
             Write-Error -Message $_ -ErrorAction Stop
