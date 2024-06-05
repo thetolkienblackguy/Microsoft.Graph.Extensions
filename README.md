@@ -1,34 +1,129 @@
-# Microsoft.Graph.Extensions 
-## Overview
-The Microsoft.Graph.Extensions module was built to enhance the usability of the Microsoft Graph PowerShell SDK. It represents a public release and a ground-up rebuild of a private module previously I bulit, so it may skew towards use cases I find valuable. This module is designed to simplify and streamline tasks, particularly in areas where the SDK may have a steeper learning curve or lacks user-friendly documentation.
+# Microsoft.Graph.Extensions
 
-## Module Purpose
-- **Intuitive Interactions**: Tailored for more straightforward and intuitive interactions with Microsoft Graph, especially in areas where the native SDK is complex.
-- **Task Simplification**: The module aims to make interactions with the Microsoft Graph more accessible, focusing on user-friendliness and simplicity.
+## Introduction
 
-## Module Status
-- **Owner**: Gabe Delaney
-- **Version**: Alpha
-- **Release Date**: [To be updated]
-- **State**: Currently in alpha, this module is under active development and subject to regular updates and improvements.
+**Microsoft.Graph.Extensions** is a PowerShell module designed to extend and enhance the functionality provided by the Microsoft Graph SDK. Built on top of the Microsoft.Graph.Authentication sub-module. If you're familiar at all with PC gaming, you probably heard of mods. In that sense, this module is more of a mod for the PowerShell Microsoft Graph SDK than a standalone module: it works on top of an established foundation, adding enhancements, quality-of-life improvements, and addressing certain limitations.
 
-## Key Features
-- **User-Friendly Functions**: Customized functions for easier and more intuitive interactions with the Graph API.
-- **Streamlined Syntax**: The syntax is designed for ease of use, simplifying the process of making Graph API calls.
+## Purpose
 
-## Usage Scenarios
-- **Ease of Use**: Ideal for users seeking straightforward ways to interact with Microsoft Graph, especially for more complex tasks.
-- **Intuitive PowerShell Experience**: Suited for PowerShell users preferring a less technical, more intuitive approach to Graph API interactions.
+This module was initially developed to address specific needs in my daily operations, but it is designed to be flexible and useful for a broader audience. By simplifying complex tasks and providing additional features, Microsoft.Graph.Extensions aims to make working with the Graph SDK more efficient and effective.
 
-## Requirements
-- Requires PowerShell 5.1 or higher.
-- Microsoft Graph PowerShell SDK must be installed.
+## Features
 
-## Contributions and Feedback
-- As this is a public release of a rebuild of a private module, it may initially lean towards Delaney's use cases. However, community feedback and contributions are highly valued for its evolution and broad applicability.
+- **Enhanced Cmdlets**: The module includes replacements for some standard SDK cmdlets that provide improved functionality and reliability. For instance, it simplifies operations like sending emails, which often require complex hashtables to handle multiple recipients or attachments.
+- **ShouldProcess Support**: Full support for `-WhatIf` and `-Confirm` parameters, allowing for safe testing of commands.
+- **Pipeline Input**: Support for pipeline input from both within the module and from standard Graph SDK cmdlets, enhancing workflow efficiency.
 
-## Notes
-- As an alpha release, users should anticipate significant updates and changes based on community feedback and ongoing development.
+## Status
 
-## Version History
-- A detailed record of the initial release and subsequent updates will be maintained here.
+The module is currently in Alpha. While it has been used in production with clients, it is still under active development. Users should be aware of its ongoing evolution and potential changes.
+
+## Installation
+
+Currently, the module is available on GitHub. You can install it by cloning the repository and importing the module manually.
+
+```powershell
+# Clone the repository
+git clone https://github.com/thetolkienblackguy/Microsoft.Graph.Extensions.git
+
+```
+
+## Usage Example & Comparison
+
+### Sending Email
+
+Here is a basic example demonstrating how to use the module to send an email with multiple recipients and attachments, highlighting the ease of use compared to standard methods.
+
+```powershell
+# Send an email with multiple recipients and attachments using the Microsoft.Graph.Extensions module
+Send-GraphMailMessage -Recipients "user1@contoso.com", "user2@contoso.com" -Subject "Hello World" -Body "This is a test email" -Attachments @("C:\path\to\file1.txt", "C:\path\to\file2.txt")
+
+# Send an email with just one recipient and attachment using the PowerShell Microsoft Graph SDK module
+Import-Module Microsoft.Graph.Users.Actions
+$params = @{
+ Message = @{
+  Subject = "Meet for lunch?"
+  Body = @{
+   ContentType = "Text"
+   Content = "The new cafeteria is open."
+  }
+  ToRecipients = @(
+   @{
+    EmailAddress = @{
+     Address = "meganb@contoso.onmicrosoft.com"
+    }
+   }
+  )
+  Attachments = @(
+   @{
+    "@odata.type" = "#microsoft.graph.fileAttachment"
+    Name = "attachment.txt"
+    ContentType = "text/plain"
+    ContentBytes = "SGVsbG8gV29ybGQh"
+   }
+  )
+ }
+}
+# A UPN can also be used as -UserId.
+Send-MgUserMail -UserId $userId -BodyParameter $params
+
+
+```
+
+### Get Entra Id Groups with Assigned License
+
+Need to find all groups in your tenant with assigned licenses?
+
+```PowerShell
+
+# Using the Microsoft.Graph.Extensions module which uses server-side filtering
+
+
+# Microsoft's recommended approach which uses client-side filtering which is signficantly slower
+
+# Get all groups with assigned licenses
+$groups = Get-MgGroup -All -Property Id, MailNickname, DisplayName, GroupTypes, Description, AssignedLicenses | Where-Object {$_.AssignedLicenses -ne $null }
+
+# Process each group
+$groupInfo = foreach ($group in $groups) {
+    # For each group, get the SKU part numbers of the assigned licenses
+    $skuPartNumbers = foreach ($skuId in $group.AssignedLicenses.SkuId) {
+        $subscribedSku = Get-MgSubscribedSku | Where-Object { $_.SkuId -eq $skuId }
+        $subscribedSku.SkuPartNumber
+    }
+
+# Create a custom object with the group's object ID, display name, and license SKU part numbers
+    [PSCustomObject]@{
+        ObjectId = $group.Id
+        DisplayName = $group.DisplayName
+        Licenses = $skuPartNumbers -join ', '
+    }
+}
+
+$groupInfo
+
+
+```
+
+## Suggestions and Feedback
+
+I am open to suggestions for new functions or improvements that you might find useful. Your feedback is invaluable as it helps guide the ongoing development of the module. Please feel free to open an issue or submit a pull request on the GitHub repository.
+
+## Contributing
+
+Contributions are welcome! If you have ideas, bug reports, or feature requests, please open an issue or submit a pull request on the GitHub repository.
+
+## License
+
+This project is licensed under the MIT License
+
+## Contact
+
+For any questions or suggestions, you can reach out via the GitHub repository.
+
+---
+
+Thank you for using Microsoft.Graph.Extensions. Let's make the Graph SDK experience more efficient and productive.
+
+**Gabriel**
+Owner, Phoenix Horizons LLC
