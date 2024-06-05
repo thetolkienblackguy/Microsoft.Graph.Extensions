@@ -9,17 +9,12 @@
         .PARAMETER SkuId        
         The sku id of the license to return the groups for. This can be a single sku id or an array of sku ids. 
 
-        .PARAMETER All
-        If this switch is specified, all licenses will be returned.
 
         .EXAMPLE
         Get-GraphGroupBasedLicenseAssignment -SkuId "6fd2c87f-b296-42f0-b197-1e91e994b900"
 
         .EXAMPLE
         Get-MgSubscribedSku | Get-GraphGroupBasedLicenseAssignment
-
-        .EXAMPLE
-        Get-GraphGroupBasedLicenseAssignment -All
 
         .INPUTS
         System.String
@@ -41,57 +36,80 @@
 
     #>
     [CmdletBinding(DefaultParameterSetName="SkuId")]
+    [OutputType([System.Management.Automation.PSCustomObject])]
     param (      
         [Parameter(
             Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true,
             ParameterSetName="SkuId"
 
         )]
-        [String[]]$SkuId,
-        [Parameter(Mandatory=$true,ParameterSetName="All")]
-        [switch]$All
+        [String]$SkuId
 
     )
     Begin {
-        # If the global variable $Global:subscribed_skus is not set, get it
-        If (!$Global:subscribed_skus) {          
-            Try {
-                # cache the subscribed skus
-                $Global:subscribed_skus = Get-MgSubscribedSku
+        # Setting the error action preference
+        $ErrorActionPreference = "Stop"
 
-            } Catch {
-                Write-Error $_ -ErrorAction Stop
+        # Invoke-MgGraphRequest parameters
+        $invoke_mg_params = @{}
+        $invoke_mg_params["Method"] = "GET"
+        $invoke_mg_params["Headers"] = @{}
+        $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
+        $invoke_mg_params["OutputType"] = "PSObject"
 
-            }
-            # Create a lookup table for the skus and cache it
-            $Global:sku_table = [System.Collections.IDictionary] @{}
+        # Setting the group properties to return
+        $group_properties = @(
+            "DisplayName","Id"
+        
+        )
 
-            Foreach ($sku in $Global:subscribed_skus) {
-                $Global:sku_table[$sku.SkuId] = $sku
-            
-            }
-        } 
-        # If the parameter All is specified, get all the skus, leverage the cached $Global:subscribed_skus
-        If ($PSBoundParameters.ContainsKey("All")) {
-            $skuId = $Global:subscribed_skus.SkuId
-            
-        }       
-    } Process {            
-        Foreach ($sku in $skuId) {
-            Try {
-                # Get all the groups with the specified sku
-                $groups = Get-MgGroup -Filter "assignedLicenses/any(s:s/skuId eq $sku)"
+        # Get the subscribed skus and cache them
+        If (!$Script:subscribed_skus) {
+            $Script:subscribed_skus = [System.Collections.ArrayList] @()
+            $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/subscribedSkus"
+            Do {
+                $r = (Invoke-MgGraphRequest @invoke_mg_params)
+                [void]$Script:subscribed_skus.AddRange(@($r.Value))
+                $invoke_mg_params["Uri"] = $r."@odata.nextLink"
 
-            } Catch {
-                Write-Error $_ -ErrorAction Continue
+            } Until (!$r."@odata.nextLink")
+        }
 
-            }
-            # Get the info for each group
-            Foreach ($g in $groups) {
-                [GraphLicenseGroupObject]::Create($g, $sku, $Global:sku_table)
-            
+        # Create a lookup table for the skus and cache it
+        If (!$Script:sku_lookup_table) {
+            $Script:sku_lookup_table = [System.Collections.IDictionary] @{}
+            Foreach ($sku in $subscribed_skus) {
+                $sku_lookup_table[$sku.SkuId] = $sku
+
             }
         }
+    } Process {
+        # Setting the users array
+        $groups = [System.Collections.ArrayList] @()
+        
+        # Add uri to invoke_mg_params hashtable 
+        $filter = "assignedLicenses/any(s:s/skuId eq $skuId)"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/groups?`$filter=$filter&`$select=$($group_properties -join ",")"
+        Try {
+            # Get all the groups with the specified sku
+            Do {
+                $r = (Invoke-MgGraphRequest @invoke_mg_params)
+                [void]$groups.AddRange(@($r.Value))
+                $invoke_mg_params["Uri"] = $r."@odata.nextLink"
+            
+            # Looping through the results until there are no more results
+            } Until (!$r."@odata.nextLink")
+
+        } Catch {
+            # Write the error to the console
+            Write-Error -Message $_ -ErrorAction Continue
+
+        }
+        # Get the info for each group
+        Foreach ($g in $groups) {
+            [GraphLicenseGroupObject]::Create($g, $skuId, $sku_lookup_table)
+                  
+        }    
     } End {
 
     }
