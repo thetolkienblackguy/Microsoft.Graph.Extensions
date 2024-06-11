@@ -36,7 +36,7 @@ Function Get-GraphUserAuthenticationMethod {
         System.Collections.Generic.List[PSCustomObject]
 
         .NOTES
-        Author: Gabriel Delaney
+        Author: Gabriel Delaney | gdelaney@phzconsulting.com
         Date: 11/13/2023
         Version: 0.0.1
         Name: Get-GraphUserAuthenticationMethod
