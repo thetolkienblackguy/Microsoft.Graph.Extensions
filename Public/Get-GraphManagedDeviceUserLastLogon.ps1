@@ -66,7 +66,7 @@ Function Get-GraphManagedDeviceUserLastLogon {
     )
     Begin {
         # Setting the error action preference
-        $ErrorActionPreference = "Stop"
+        #$ErrorActionPreference = "Stop"
 
         # Setting default parameter values
         $PSDefaultParameterValues = @{}
@@ -74,6 +74,7 @@ Function Get-GraphManagedDeviceUserLastLogon {
         $PSDefaultParameterValues["Add-Member:Force"] = $true
         $PSDefaultParameterValues["Invoke-MgGraphRequest:Method"] = "GET"
         $PSDefaultParameterValues["Invoke-MgGraphRequest:OutputType"] = "PSObject"
+        $PSDefaultParameterValues["*:ErrorAction"] = "Stop"
 
         # Add the UsersLoggedOn property to the select array if it is not present
         If ($select -notcontains "UsersLoggedOn") {
@@ -103,7 +104,6 @@ Function Get-GraphManagedDeviceUserLastLogon {
 
                     # Setting the error message
                     Write-Error @write_error_params
-                    Break
                 
                 } 
             } 
@@ -142,7 +142,12 @@ Function Get-GraphManagedDeviceUserLastLogon {
         # This seems inelegant, but it works
         $output_obj = Foreach ($u in $r.UsersLoggedOn) {
             # Get the user principal name for the userId
-            $r.UserPrincipalName = (Get-GraphUser -UserId $u.UserId).UserPrincipalName
+            $user_id = $u.UserId
+            $r.UserPrincipalName = (Get-GraphUser -UserId $user_id -ErrorAction SilentlyContinue).UserPrincipalName
+            If (!$r.UserPrincipalName) {
+                $r.UserPrincipalName = $user_id
+            
+            }
 
             # Get the last logon date time for the userId if it exists
             $r.LastLogonDateTime = If ($u.LastLogonDateTime) {
