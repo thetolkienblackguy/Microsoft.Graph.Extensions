@@ -80,9 +80,6 @@ Function Get-GraphUser {
         # Setting the error action preference
         $ErrorActionPreference = "Stop"
 
-        # Setting the function name
-        $function = $MyInvocation.MyCommand.Name
-
         # Setting the users array
         $users = [System.Collections.ArrayList] @()
 
@@ -117,28 +114,11 @@ Function Get-GraphUser {
             } Until (!$r."@odata.nextLink" -or @($users).Count -le $top)
 
         } Catch {
-            Write-Error -Message $_ -ErrorAction Stop
+            Write-Error -Message $_
 
-        }
-        If (!$users -and $PSCmdlet.ParameterSetName -eq "UserId") {
-            # Setting the error details
-            $error_details_params = @{}
-            $error_details_params["Message"] = "Resource '$userId' does not exist or one of its queried reference-property objects are not present"
-            $error_details_params["Identity"] = $userId
-            $error_details_params["Function"] = $function
-            $error_details_params["Category"] = "ObjectNotFound"
-            $error_details_params["CategoryTargetType"] = "Microsoft.Graph.User"
-            $write_error_params = Set-ErrorDetails @error_details_params
-
-            # Setting the error message
-            Write-Error @write_error_params -ErrorAction Stop
-            Break
-
-        } Else {
-            $users
-        
         }
     } End {
+        $users
 
     }
 }
