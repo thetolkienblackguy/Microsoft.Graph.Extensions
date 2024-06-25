@@ -70,6 +70,9 @@ Function Get-GraphUser {
             "DisplayName","Id","Mail","UserPrincipalName"
             
         ),
+        [Parameter(Mandatory=$false)]
+        [ValidateSet("Beta","v1.0")]
+        [string]$ApiVersion = "v1.0",
         [Parameter(Mandatory=$false,ParameterSetName="Filter")]
         [Parameter(Mandatory=$false,ParameterSetName="All")]
         [ValidateRange(1,999)]
@@ -98,7 +101,7 @@ Function Get-GraphUser {
         }
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/users?`$count=true&`$filter=$filter&`$select=$($select -join ",")$($top_str)"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/users?`$count=true&`$filter=$filter&`$select=$($select -join ",")$($top_str)"
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
         $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
