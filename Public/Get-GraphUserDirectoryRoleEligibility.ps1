@@ -31,7 +31,11 @@ Function Get-GraphUserDirectoryRoleEligibility {
     [CmdletBinding()]
     [OutputType([PSObject])]
     param (
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(
+            Mandatory=$true,Position=0,ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true
+            
+        )]
         [Alias("Id","UserPrincipalName","UPN")]
         [string[]]$UserId
     
