@@ -64,13 +64,6 @@ Send-GraphMailMessage -To "john@example.com" -From "jane@example.com" -Subject "
 ### Example 2: Send an email with attachments
 ```powershell
 Send-GraphMailMessage -To "john@example.com" -From "jane@example.com" -Subject "Report" -Body "Please find the attached report." -Attachments "C:\report.pdf"
-```
-
-## Notes
-
-- Author: Gabe Delaney | gdelaney@phzconsulting.com
-- Version: 0.0.1
-- Date: 11/09/2023
 
 ---
 
