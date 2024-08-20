@@ -41,12 +41,19 @@ Function Set-GraphUserCertificateUserIds {
         0.0.1 - Alpha Release - 11/14/2023 - Gabe Delaney
 
     #>
-    [CmdletBinding(DefaultParameterSetName="Value",SupportsShouldProcess=$true,ConfirmImpact="Low")]
+    [CmdletBinding(
+        DefaultParameterSetName="Value",SupportsShouldProcess=$true,ConfirmImpact="Low"
+        
+    )]
     [OutputType([PSObject])]
     param (
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(
+            Mandatory=$true,Position=0,ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true
+        
+        )]
         [string]$UserId,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true,Position=1)]
         [ValidateSet(
             "PrincipalName", "RFC822Name", "X509SKI", "X509SHA1PUblicKey"
     
