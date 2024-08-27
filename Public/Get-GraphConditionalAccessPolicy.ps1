@@ -93,8 +93,10 @@ Function Get-GraphConditionalAccessPolicy {
                 If ($flattenOutput) {
                     # Flatten the output
                     Write-Warning "Object flattening is experimental and may not work as expected in all scenarios."
-                    $r.Value | ConvertTo-FlatObject
+                    Foreach ($policy in $r.Value) {
+                        $policy | ConvertTo-FlatObject
                 
+                    }
                 } Else {
                     # Return the raw object
                     $r.Value
