@@ -161,7 +161,6 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
                 
             }
         }
-        $conditions
 
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
