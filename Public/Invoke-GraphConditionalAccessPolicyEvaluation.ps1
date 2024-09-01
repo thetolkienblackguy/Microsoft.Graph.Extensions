@@ -72,17 +72,17 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
         )]
         [Alias("Id")]
         [string]$UserId,
-        [Parameter(Mandatory=$true, ParameterSetName="Application")]
-        [string[]]$IncludeApplications,
+        [Parameter(Mandatory=$false, ParameterSetName="Application")]
+        [string[]]$IncludeApplications = @(),
         [Parameter(Mandatory=$true, ParameterSetName="UserAction")]
         [ValidateSet("registerOrJoinDevices", "registerSecurityInformation")]
         [Parameter(Mandatory=$false)]
         [string]$UserAction,
         [ValidateSet(
-            "all", "Android", "iOS", "windows", "windowsPhone", "macOS", "linux"
+            "All", "Android", "iOS", "windows", "windowsPhone", "macOS", "linux"
             
         )]
-        [string[]]$DevicePlatform,
+        [string]$DevicePlatform,
         [Parameter(Mandatory=$false)]
         [ValidateSet("None", "Low", "Medium", "High")]
         [string]$SignInRiskLevel,
@@ -158,9 +158,10 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
         Foreach ($key in $PSBoundParameters.Keys) {
             if ($key -notin @("UserId", "IncludeApplications", "UserAction")) {
                 $conditions[$key] = $PSBoundParameters[$key]
-            
+                
             }
         }
+        $conditions
 
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
@@ -180,7 +181,7 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
             Do {
                 $r = (Invoke-MgGraphRequest @invoke_mg_params)
                 $r.Value | Where-Object {
-                    $_.policyApplies
+                    $_.policyApplies -or $_.reasons -contains "notEnoughInformation"
                 
                 } 
                 $invoke_mg_params["Uri"] = $r."@odata.nextLink"
