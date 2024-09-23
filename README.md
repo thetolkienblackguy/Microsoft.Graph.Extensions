@@ -6,7 +6,13 @@
 
 ## About
 
-The Microsoft.Graph.Extensions PowerShell module provides extended and simplified cmdlets that enhance the Microsoft Graph PowerShell SDK. This module is designed to streamline interactions with the Microsoft Graph API, offering a more user-friendly and efficient approach to common tasks.
+When Microsoft announced the deprecation of the MSOnline and AzureAD modules, I quickly transitioned to using the Microsoft Graph PowerShell SDK. While the transition wasn't difficult due to my familiarity with Microsoft Graph, I encountered several challenges. Many cmdlets didn't work as expected, some had bugs or weren't feature-complete, and numerous commands required complex JSON bodies to perform tasks - a particular pain point for those unfamiliar with REST APIs (I'm looking at you, Send-MgUserMail).
+
+These experiences motivated me to create Microsoft.Graph.Extensions. I originally built this module for my own development work with clients, aiming to streamline automation processes. Over time, the module has continued to evolve - including multiple name changes. While some functions have become less useful as the official SDK has improved, new needs and use cases have emerged, driving further development.
+
+The module remains very much centered around the use cases I encounter most frequently in my work. However, it has reached a stage where I believe it could be valuable to others facing similar challenges or looking to simplify their interactions with Microsoft Graph.
+
+The Microsoft.Graph.Extensions PowerShell module provides extended and simplified functions that enhance the Microsoft Graph PowerShell SDK. This module is designed to streamline interactions with the Microsoft Graph API, offering a more user-friendly and efficient approach to common tasks.
 
 ## Overview
 
@@ -93,6 +99,26 @@ Finding groups with licensing:
 # Retrieve all groups that have licenses assigned
 Get-GraphGroupBasedLicenseAssignment
 ```
+
+## Dependencies
+
+### Required
+- **Microsoft.Graph.Authentication**: This module is required for authentication with Microsoft Graph.
+
+### Recommended
+- **Microsoft.Graph**: While not strictly required, it is strongly recommended to use Microsoft.Graph.Extensions alongside the full Microsoft.Graph module. Microsoft.Graph.Extensions is designed to enhance and simplify certain operations, not to replace the core functionality provided by Microsoft.Graph.
+
+To install the dependencies, you can use the following commands:
+
+```powershell
+# Install required module
+Install-Module -Name Microsoft.Graph.Authentication -Force
+
+# Install recommended module
+Install-Module -Name Microsoft.Graph -Force
+```
+
+Note: Microsoft.Graph.Extensions is not a replacement for the Microsoft.Graph module. It is designed to work in conjunction with it, providing additional functionality and simplified workflows for common tasks.
 
 ## Conclusion
 

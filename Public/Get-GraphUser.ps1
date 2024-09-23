@@ -53,7 +53,8 @@ Function Get-GraphUser {
     [OutputType([System.Management.Automation.PSCustomObject])]
     Param (
         [Parameter(
-            Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true,ParameterSetName="UserId"
+            Mandatory=$true,Position=0,ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true,ParameterSetName="UserId"
                 
         )]
         [Alias(

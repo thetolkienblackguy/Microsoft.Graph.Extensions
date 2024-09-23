@@ -53,12 +53,14 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
 
         .NOTES
         Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 06/08/2024
-        Version: 0.0.1
+        Date: 08/30/2024
+        Version: 0.0.2
         Name: Invoke-GraphConditionalAccessPolicyEvaluation
 
         Version History:
         0.0.1 - Alpha Release - 06/08/2024 - Gabe Delaney
+        0.0.2 - Corrected an issue where the function would return all results, and not just policies that apply. 
+                - 08/30/2024 - Gabe Delaney
     
     #>
     [CmdletBinding(DefaultParameterSetName="Application")]
@@ -70,17 +72,17 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
         )]
         [Alias("Id")]
         [string]$UserId,
-        [Parameter(Mandatory=$true, ParameterSetName="Application")]
-        [string[]]$IncludeApplications,
+        [Parameter(Mandatory=$false, ParameterSetName="Application")]
+        [string[]]$IncludeApplications = @(),
         [Parameter(Mandatory=$true, ParameterSetName="UserAction")]
         [ValidateSet("registerOrJoinDevices", "registerSecurityInformation")]
         [Parameter(Mandatory=$false)]
         [string]$UserAction,
         [ValidateSet(
-            "all", "Android", "iOS", "windows", "windowsPhone", "macOS", "linux"
+            "All", "Android", "iOS", "windows", "windowsPhone", "macOS", "linux"
             
         )]
-        [string[]]$DevicePlatform,
+        [string]$DevicePlatform,
         [Parameter(Mandatory=$false)]
         [ValidateSet("None", "Low", "Medium", "High")]
         [string]$SignInRiskLevel,
@@ -156,7 +158,7 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
         Foreach ($key in $PSBoundParameters.Keys) {
             if ($key -notin @("UserId", "IncludeApplications", "UserAction")) {
                 $conditions[$key] = $PSBoundParameters[$key]
-            
+                
             }
         }
 
@@ -177,7 +179,10 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
         Try {
             Do {
                 $r = (Invoke-MgGraphRequest @invoke_mg_params)
-                $r.Value
+                $r.Value | Where-Object {
+                    $_.policyApplies -or $_.reasons -contains "notEnoughInformation"
+                
+                } 
                 $invoke_mg_params["Uri"] = $r."@odata.nextLink"
             
             # Looping through the results until there are no more results
@@ -188,9 +193,6 @@ Function Invoke-GraphConditionalAccessPolicyEvaluation {
 
         }
     } End {
-        $policies | Where-Object {
-            $_.policyApplies
-        
-        }
+
     }
 }

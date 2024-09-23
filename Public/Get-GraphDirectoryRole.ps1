@@ -53,7 +53,11 @@ Function Get-GraphDirectoryRole {
     [CmdletBinding(DefaultParameterSetName="DirectoryRole")]
     [OutputType([System.Management.Automation.PSCustomObject])]
     Param (
-        [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true,ParameterSetName="DirectoryRole")]
+        [Parameter(
+            Mandatory=$true,Position=0,ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true,ParameterSetName="DirectoryRole"
+            
+        )]
         [Alias("Id","RoleDefinitionId")]
         [string[]]$DirectoryRole,
         [Parameter(Mandatory=$true,ParameterSetName="Filter")]

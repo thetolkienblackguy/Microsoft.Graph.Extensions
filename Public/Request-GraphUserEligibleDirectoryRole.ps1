@@ -43,13 +43,13 @@ Function Request-GraphUserEligibleDirectoryRole {
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([System.Management.Automation.PSCustomObject])]
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true,Position=0)]
         [Alias("PrincipalId")]
         [string]$UserId,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true,Position=1)]
         [Alias("Id", "DirectoryRole")]
         [string]$RoleDefinitionId,
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$false,Position=2)]
         [string]$Justification = (Read-Host "Please provide a justification for this request"),
         [Parameter(Mandatory=$false)]
         [UtcDateTime]$StartDateTime = (Get-Date),
