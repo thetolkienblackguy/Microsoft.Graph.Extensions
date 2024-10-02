@@ -73,11 +73,11 @@ Function Get-GraphUser {
         ),
         [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
-        [string]$ApiVersion = "v1.0",
-        [Parameter(Mandatory=$false,ParameterSetName="Filter")]
+        [string]$ApiVersion = "v1.0"
+        <#[Parameter(Mandatory=$false,ParameterSetName="Filter")]
         [Parameter(Mandatory=$false,ParameterSetName="All")]
         [ValidateRange(1,999)]
-        [int]$Top
+        [int]$Top#>
     
     )
     Begin {
@@ -90,13 +90,13 @@ Function Get-GraphUser {
             $filter = $null
 
         }
-        If ($top) {
+        <#If ($top) {
             $top_str = "&`$top=$top"
 
-        }
+        }#>
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/users?`$count=true&`$filter=$filter&`$select=$($select -join ",")$($top_str)"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/users?`$count=true&`$filter=$filter&`$select=$($select -join ",")"
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
         $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
@@ -114,7 +114,7 @@ Function Get-GraphUser {
                 $invoke_mg_params["Uri"] = $r."@odata.nextLink"
             
             # Looping through the results until there are no more results
-            } Until (!$r."@odata.nextLink" -or @($users).Count -le $top)
+            } Until (!$r."@odata.nextLink")
 
         } Catch {
             Write-Error -Message $_
