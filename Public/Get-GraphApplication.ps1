@@ -67,11 +67,11 @@ Function Get-GraphApplication {
         ),
         [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
-        [string]$ApiVersion = "v1.0",
-        [Parameter(Mandatory=$false,ParameterSetName="Filter")]
+        [string]$ApiVersion = "v1.0"
+        <#[Parameter(Mandatory=$false,ParameterSetName="Filter")]
         [Parameter(Mandatory=$false,ParameterSetName="All")]
         [ValidateRange(1,999)]
-        [int]$Top
+        [int]$Top#>
     
     )
     Begin {
@@ -92,14 +92,14 @@ Function Get-GraphApplication {
         }
 
         # If the top parameter is set, add it to the filter
-        If ($top) {
+        <#If ($top) {
             $top_str = "&`$top=$top"
         
-        }
+        }#>
 
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/applications?`$count=true&`$filter=$filter&`$select=$($select -join ",")$top_str"   
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/applications?`$count=true&`$filter=$filter&`$select=$($select -join ",")"   
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
         $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
@@ -117,7 +117,7 @@ Function Get-GraphApplication {
                 $invoke_mg_params["Uri"] = $response."@odata.nextLink"
             
             # Looping through the results until there are no more results
-            } Until (!$response."@odata.nextLink" -or @($response.Value).Count -le $top)
+            } Until (!$response."@odata.nextLink")
 
         } Catch {
             Write-Error -Message $_
