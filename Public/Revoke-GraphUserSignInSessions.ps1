@@ -56,21 +56,23 @@ Function Revoke-GraphUserSignInSessions {
         $invoke_mg_params["Method"] = "POST"
 
     } Process {
-        If ($PSCmdlet.ShouldProcess($UserId,"Revoke user sign in sessions")) {
-            Try {
-                # Revoke user sign in sessions
-                $r = Invoke-MgGraphRequest @invoke_mg_params -Uri ($uri -f $UserId)
-                If ($passThru) {
-                    $obj = @{}
-                    $obj["UserId"] = $userId
-                    $obj["SessionsRevoked"] = $r.Value
-                    [pscustomobject]$obj
+        Foreach ($id in $userId) {
+            If ($PSCmdlet.ShouldProcess($id,"Revoke user sign in sessions")) {
+                Try {
+                    # Revoke user sign in sessions
+                    $r = Invoke-MgGraphRequest @invoke_mg_params -Uri ($uri -f $id)
+                    If ($passThru) {
+                        $obj = @{}
+                        $obj["UserId"] = $id
+                        $obj["SessionsRevoked"] = $r.Value
+                        [pscustomobject]$obj
                 
+                    }
+                } Catch {
+                    # Write error
+                    Write-Error -Message $_
+
                 }
-            } Catch {
-                # Write error
-                Write-Error -Message $_
-            
             }
         }
     } End {

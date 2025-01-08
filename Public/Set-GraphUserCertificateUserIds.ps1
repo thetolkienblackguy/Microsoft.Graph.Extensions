@@ -31,15 +31,6 @@ Function Set-GraphUserCertificateUserIds {
         .EXAMPLE
         Set-GraphUserCertificateUserIds -UserId "John.Doe@contoso.com" -CertificateMapping "PrincipalName" -CertificatePath "C:\Users\John.Doe\Documents\John.Doe.cer"
 
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 11/14/2023
-        Version: 0.0.1
-        Name: Set-GraphUserCertificateUserIds
-
-        Version History:
-        0.0.1 - Alpha Release - 11/14/2023 - Gabe Delaney
-
     #>
     [CmdletBinding(
         DefaultParameterSetName="Value",SupportsShouldProcess=$true,ConfirmImpact="Low"

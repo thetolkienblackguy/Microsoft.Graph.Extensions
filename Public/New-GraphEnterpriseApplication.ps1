@@ -60,15 +60,6 @@ Function New-GraphEnterpriseApplication {
 
         .OUTPUTS
         System.Management.Automation.PSCustomObject
-
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 02/06/2024
-        Version: 0.0.1
-        Name: New-GraphEnterpriseApplication
-
-        Version History:
-        0.0.1 - Alpha Release - 02/06/2024 - Gabe Delaney
     
     #>
     [CmdletBinding()]

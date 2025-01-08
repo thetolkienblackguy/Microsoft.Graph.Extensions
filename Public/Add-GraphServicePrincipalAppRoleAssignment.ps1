@@ -27,15 +27,6 @@ Function Add-GraphServicePrincipalAppRoleAssignment {
 
         .OUTPUTS
         System.Management.Automation.PSCustomObject
-
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 12/19/2023
-        Version: 0.0.1
-        Name: Add-GraphApplicationRole
-
-        Version History:
-        0.0.1 - Alpha Release - 12/19/2023 - Gabe Delaney
     
     #>
     [CmdletBinding()]

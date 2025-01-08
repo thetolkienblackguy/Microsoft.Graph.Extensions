@@ -25,15 +25,6 @@
         .LINK
         https://docs.microsoft.com/en-us/graph/api/resources/subscribedsku?view=graph-rest-1.0
 
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 11/14/2023
-        Version: 0.0.1
-        Name: Get-GraphGroupBasedLicenseAssignment
-
-        Version History:
-        0.0.1 - Alpha Release - 11/14/2023 - Gabe Delaney
-
     #>
     [CmdletBinding(DefaultParameterSetName="SkuId")]
     [OutputType([System.Management.Automation.PSCustomObject])]

@@ -40,15 +40,6 @@ Function Get-GraphApplication {
         .OUTPUTS
         System.Management.Automation.PSCustomObject
 
-        .NOTES
-        Author: Gabriel Delaney
-        Date: 08/29/2024
-        Version: 0.0.1
-        Name: Get-GraphApplication
-
-        Version History:
-        0.0.1 - Alpha Release - 08/29/2024 - Gabriel Delaney
-
     #>
     [CmdletBinding(DefaultParameterSetName="ApplicationId")]
     [OutputType([System.Management.Automation.PSCustomObject])]
@@ -68,11 +59,7 @@ Function Get-GraphApplication {
         [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
         [string]$ApiVersion = "v1.0"
-        <#[Parameter(Mandatory=$false,ParameterSetName="Filter")]
-        [Parameter(Mandatory=$false,ParameterSetName="All")]
-        [ValidateRange(1,999)]
-        [int]$Top#>
-    
+
     )
     Begin {
     } Process {
@@ -90,13 +77,6 @@ Function Get-GraphApplication {
             $filter = $null
         
         }
-
-        # If the top parameter is set, add it to the filter
-        <#If ($top) {
-            $top_str = "&`$top=$top"
-        
-        }#>
-
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
         $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/applications?`$count=true&`$filter=$filter&`$select=$($select -join ",")"   

@@ -39,15 +39,6 @@ Function Get-GraphUser {
         .OUTPUTS
         System.Object
 
-        .NOTES
-        Author: Gabriel Delaney
-        Date: 05/30/2024
-        Version: 0.0.1
-        Name: Get-GraphUser
-
-        Version History:
-        0.0.1 - Alpha Release - 05/30/2024 - Gabriel Delaney
-
     #>
     [CmdletBinding(DefaultParameterSetName="UserId")]
     [OutputType([System.Management.Automation.PSCustomObject])]
@@ -61,7 +52,7 @@ Function Get-GraphUser {
             "Id","UserPrincipalName","UPN"
             
         )]
-        [string[]]$UserId,
+        [string]$UserId,
         [Parameter(Mandatory=$true,ParameterSetName="Filter")]
         [string]$Filter,
         [Parameter(Mandatory=$true,ParameterSetName="All")]
@@ -74,10 +65,6 @@ Function Get-GraphUser {
         [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
         [string]$ApiVersion = "v1.0"
-        <#[Parameter(Mandatory=$false,ParameterSetName="Filter")]
-        [Parameter(Mandatory=$false,ParameterSetName="All")]
-        [ValidateRange(1,999)]
-        [int]$Top#>
     
     )
     Begin {
@@ -90,13 +77,9 @@ Function Get-GraphUser {
             $filter = $null
 
         }
-        <#If ($top) {
-            $top_str = "&`$top=$top"
-
-        }#>
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/users?`$count=true&`$filter=$filter&`$select=$($select -join ",")"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/users/$userId"
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
         $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"

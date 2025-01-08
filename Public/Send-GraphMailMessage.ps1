@@ -44,19 +44,11 @@ Function Send-GraphMailMessage {
         
         .INPUTS
         System.String
+        System.String[]
         System.IO.FileInfo
         System.Boolean
 
         .OUTPUTS
-
-        .NOTES
-        Author: Gabe Delaney | gdelaney@phzconsulting.com
-        Version: 0.0.1
-        Date: 11/09/2023
-        Name: Send-GraphMailMessage
-
-        Version History:
-        0.0.1 - Alpha Release - 11/09/2023 - Gabe Delaney
     
     #>
     [CmdletBinding()]

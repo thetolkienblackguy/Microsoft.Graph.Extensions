@@ -30,15 +30,6 @@ Function Request-GraphUserEligibleDirectoryRole {
         .OUTPUTS
         System.Management.Automation.PSCustomObject
 
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 05/29/2024
-        Version: 0.0.1
-        Name: Request-GraphUserEligibleDirectoryRole
-
-        Version History:
-        0.0.1 - Original Release - Gabriel Delaney - 05/29/2024
-
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([System.Management.Automation.PSCustomObject])]

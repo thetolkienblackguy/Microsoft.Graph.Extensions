@@ -64,27 +64,29 @@ Function Disable-GraphUser {
         $invoke_mg_params["Body"]["accountEnabled"] = $false
         
     } Process {
-        If ($PSCmdlet.ShouldProcess($UserId,"Disable user")) {
-            Try {
-                # Disable user
-                Invoke-MgGraphRequest @invoke_mg_params -Uri ($uri -f $UserId)
+        Foreach ($id in $userId) {
+            If ($PSCmdlet.ShouldProcess($id,"Disable user")) {
+                Try {
+                    # Disable user
+                    Invoke-MgGraphRequest @invoke_mg_params -Uri ($uri -f $id)
 
                 # Revoke user sign in sessions, if the -RevokeSessions switch is used
                 If ($revokeSessions) {
-                    Revoke-GraphUserSignInSessions -UserId $UserId -Confirm:$false
+                    Revoke-GraphUserSignInSessions -UserId $id -Confirm:$false
 
                 } Else {
-                    Write-Warning -Message "User $UserId has been disabled, but sign in sessions have not been revoked. It is strongly recommended to revoke sign in sessions when disabling a user."
+                    Write-Warning -Message "User $id has been disabled, but sign in sessions have not been revoked. It is strongly recommended to revoke sign in sessions when disabling a user."
                     
                 }
                 If ($passThru) {
-                    Get-GraphUser -UserId $UserId
+                    Get-GraphUser -UserId $id
+
+                    }
+                } Catch {
+                    # Write error
+                    Write-Error -Message $_
 
                 }
-            } Catch {
-                # Write error
-                Write-Error -Message $_
-
             }
         }
     } End {

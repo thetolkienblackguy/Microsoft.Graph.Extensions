@@ -18,15 +18,6 @@ Function Get-GraphUserDirectoryRoleEligibility {
         .OUTPUTS
         System.Management.Automation.PSCustomObject
 
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 05/29/2024
-        Version: 0.0.1
-        Name: Get-GraphUserDirectoryRoleEligibility
-
-        Version History:
-        0.0.1 - Alpha Release - Gabriel Delaney - 05/29/2024
-
     #>
     [CmdletBinding()]
     [OutputType([PSObject])]

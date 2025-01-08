@@ -32,15 +32,6 @@ Function Get-GraphAccessToken {
 
         .LINK
         https://docs.microsoft.com/en-us/graph/auth-v2-service?context=graph%2Fapi%2F1.0&view=graph-rest-1.0
-
-        .NOTES
-        Author: Gabe Delaney | gdelaney@phzconsulting.com
-        Version: 0.0.1
-        Date: 11/09/2023
-        Name: Get-GraphAccessToken
-
-        Version History:
-        0.0.1 - Alpha Release - 11/09/2023 - Gabe Delaney
          
     #>
     [CmdletBinding()]

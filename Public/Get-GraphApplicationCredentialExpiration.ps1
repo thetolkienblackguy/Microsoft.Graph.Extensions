@@ -37,15 +37,6 @@ function Get-GraphApplicationCredentialExpiration {
         .OUTPUTS
         System.Management.Automation.PSCustomObject
 
-        .NOTES
-        Author: Gabriel Delaney
-        Date: 08/29/2024
-        Version: 0.0.1
-        Name: Get-GraphApplicationCredentialStatus
-
-        Version History:
-        0.0.1 - Alpha Release - 08/29/2024 - Gabriel Delaney
-
     #>
     [CmdletBinding(DefaultParameterSetName="AppId")]
     [OutputType([System.Management.Automation.PSCustomObject])]

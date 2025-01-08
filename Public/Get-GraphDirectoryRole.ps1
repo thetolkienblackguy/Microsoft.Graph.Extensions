@@ -40,15 +40,6 @@ Function Get-GraphDirectoryRole {
         .OUTPUTS
         System.Management.Automation.PSCustomObject
 
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 08/16/2024
-        Version: 0.0.1
-        Name: Get-GraphDirectoryRole
-
-        Version History:
-        0.0.1 - Alpha Release - 08/16/2024 - Gabriel Delaney
-
     #>
     [CmdletBinding(DefaultParameterSetName="DirectoryRole")]
     [OutputType([System.Management.Automation.PSCustomObject])]
@@ -72,10 +63,7 @@ Function Get-GraphDirectoryRole {
         [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
         [string]$ApiVersion = "v1.0"
-        <#[Parameter(Mandatory=$false,ParameterSetName="Filter")]
-        [Parameter(Mandatory=$false,ParameterSetName="All")]
-        [ValidateRange(1,999)]
-        [int]$Top#>
+
     )
 
     Begin {

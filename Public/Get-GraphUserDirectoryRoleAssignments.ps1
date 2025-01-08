@@ -18,15 +18,6 @@ Function Get-GraphUserDirectoryRoleAssignments {
         .OUTPUTS
         System.Management.Automation.PSCustomObject
 
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 05/29/2024
-        Version: 0.0.1
-        Name: Get-GraphUserDirectoryRoleAssignments
-
-        Version History:
-        0.0.1 - Original Release - Gabriel Delaney - 05/29/2024
-
     #>
     [CmdletBinding()]
     [OutputType([System.Management.Automation.PSCustomObject])]

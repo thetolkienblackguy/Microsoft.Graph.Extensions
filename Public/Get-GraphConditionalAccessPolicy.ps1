@@ -30,15 +30,6 @@ Function Get-GraphConditionalAccessPolicy {
         .LINK
         https://docs.microsoft.com/en-us/graph/api/resources/conditionalaccesspolicy?view=graph-rest-1.0
         
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 11/11/2023
-        Version: 0.0.1
-        Name: Get-GraphConditionalAccessPolicy
-
-        Version History:
-        0.0.1 - Alpha Release - 11/11/2023 - Gabe Delaney
-
     #>
     [CmdletBinding(DefaultParameterSetName="All")]
     [OutputType([System.Management.Automation.PSObject])]
