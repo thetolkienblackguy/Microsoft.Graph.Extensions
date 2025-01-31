@@ -95,7 +95,7 @@ Function New-GraphEnterpriseApplication {
         [Parameter(Mandatory=$false)]
         [uri[]]$ReplyUrls,
         [Parameter(Mandatory=$false)]
-        [string[]]$NotificationEmailAddresses = (Invoke-GraphRequest -Uri "https://graph.microsoft.com/v1.0/me").Mail,
+        [string[]]$NotificationEmailAddresses = (Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/me").Mail,
         [Parameter(Mandatory=$false)]
         [string]$Description = "Enterprise Application created by New-GraphEnterpriseApplication",
         [Parameter(Mandatory=$false)]
