@@ -27,7 +27,7 @@ Function Enable-GraphUser {
         System.Object
 
     #>
-    [CmdletBinding(SupportsShouldProcess=$true,ConfirmImpact="High")]
+    [CmdletBinding(SupportsShouldProcess=$true,ConfirmImpact="Low")]
     [OutputType([System.Management.Automation.PSCustomObject])]
     Param (
         [Parameter(
