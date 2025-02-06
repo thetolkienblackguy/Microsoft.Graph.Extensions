@@ -79,7 +79,7 @@ Function Get-GraphUser {
         }
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/users/$userId"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/users?`$filter=$filter&`$select=$($select -join ',')"
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
         $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
@@ -90,13 +90,9 @@ Function Get-GraphUser {
                 # Invoke-MgGraphRequest
                 $r = (Invoke-MgGraphRequest @invoke_mg_params)
                 
-                if ($PSCmdlet.ParameterSetName -eq "UserId") {
-                    $r
+                # Return the results
+                $r.value
                 
-                } else {
-                    $r.value
-                
-                }
                 # Set the next link
                 $invoke_mg_params["Uri"] = $r."@odata.nextLink"
             
