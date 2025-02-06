@@ -91,8 +91,13 @@ Function Get-GraphUser {
                 $r = (Invoke-MgGraphRequest @invoke_mg_params)
                 
                 # Output the results
-                $r.Value
+                If (!$r.Value) {
+                    $r
 
+                } Else {
+                    $r.Value 
+                
+                }
                 # Set the next link
                 $invoke_mg_params["Uri"] = $r."@odata.nextLink"
             
