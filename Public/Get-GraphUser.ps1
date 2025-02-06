@@ -90,12 +90,11 @@ Function Get-GraphUser {
                 # Invoke-MgGraphRequest
                 $r = (Invoke-MgGraphRequest @invoke_mg_params)
                 
-                # Output the results
-                If (!$r.Value) {
+                if ($PSCmdlet.ParameterSetName -eq "UserId") {
                     $r
-
-                } Else {
-                    $r.Value 
+                
+                } else {
+                    $r.value
                 
                 }
                 # Set the next link
