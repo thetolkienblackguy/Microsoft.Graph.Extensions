@@ -59,7 +59,7 @@ Function Get-GraphUser {
         [switch]$All,
         [Parameter(Mandatory=$false)]
         [string[]]$Select = @(
-            "DisplayName","Id","Mail","UserPrincipalName"
+            "DisplayName","Id","Mail","UserPrincipalName","AccountEnabled"
             
         ),
         [Parameter(Mandatory=$false)]
