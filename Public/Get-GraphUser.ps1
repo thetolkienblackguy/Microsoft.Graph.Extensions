@@ -18,9 +18,6 @@ Function Get-GraphUser {
         .PARAMETER All
         Retrieve all users.
 
-        .PARAMETER Top
-        The number of results to return. The default value is 999.
-
         .EXAMPLE
         Get-GraphUser -UserId "12345678-1234-1234-1234-123456789012"
 
@@ -59,7 +56,7 @@ Function Get-GraphUser {
         [switch]$All,
         [Parameter(Mandatory=$false)]
         [string[]]$Select = @(
-            "DisplayName","Id","Mail","UserPrincipalName","AccountEnabled"
+            "DisplayName","Id","Mail","UserPrincipalName"
             
         ),
         [Parameter(Mandatory=$false)]
