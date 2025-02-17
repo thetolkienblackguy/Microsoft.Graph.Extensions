@@ -59,6 +59,7 @@ Function Get-GraphGroupMember {
         
         } Else {
             "members"
+        
         }
         # Set the oData type based on the parameters
         $odata_type = If ($PSCmdlet.ParameterSetName -eq "ExcludeGroups") {
