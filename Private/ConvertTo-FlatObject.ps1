@@ -22,16 +22,6 @@ function ConvertTo-FlatObject {
 
         .OUTPUTS
         System.Object
-        
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 08/27/2024
-        Version: 0.0.2
-        Name: ConvertTo-FlatObject
-
-        Version History:
-        0.0.1 - Alpha Release - 11/11/2023 - Gabe Delaney
-        0.0.2 - Updated to add logic to check for existing properties to correct a bug where properties were being overwritten - 08/27/2024 - Gabe Delaney
     
     #>
     [CmdletBinding()]
