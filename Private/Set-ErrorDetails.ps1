@@ -42,15 +42,6 @@ Function Set-ErrorDetails {
 
         .EXAMPLE
         Set-ErrorDetails -Identity jdoe -Function Get-ADUser 
-
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 11/13/2023
-        Version: 0.0.1
-        Name: Set-ErrorDetails
-
-        Version History:
-        0.0.1 - Alpha Release - 11/13/2023 - Gabe Delaney
     
     #>
     [CmdletBinding()]
