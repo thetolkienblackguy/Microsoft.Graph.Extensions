@@ -17,15 +17,6 @@ function Remove-InvalidFileNameChars {
 
         .OUTPUTS
         System.String
-
-        .NOTES
-        Author: Gabriel Delaney | gdelaney@phzconsulting.com
-        Date: 11/14/2023
-        Version: 0.0.1
-        Name: Remove-InvalidFileNameChars
-
-        Version History:
-        0.0.1 - Alpha Release - 11/14/2023 - Gabe Delaney
      
     #>
     [CmdletBinding()]
