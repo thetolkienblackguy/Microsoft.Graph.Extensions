@@ -39,9 +39,7 @@ Function Send-GraphMailMessage {
         .EXAMPLE
         Send-GraphMailMessage -To "john.doe@contoso.com" -From "jane.doe@contoso.com" -Subject "Test" -Body "This is a test" -Attachments "C:\Temp\test.txt"
 
-        .LINK
-        https://docs.microsoft.com/en-us/graph/api/user-sendmail?view=graph-rest-1.0&tabs=http
-        
+            .INPUTS
         .INPUTS
         System.String
         System.String[]
@@ -86,25 +84,26 @@ Function Send-GraphMailMessage {
            
         # Creating message hash table
         $message = @{}
-        $message["subject"] =  $subject
+        $message["subject"] = $subject
         $message["body"] = @{}
         $message["body"]["contentType"] = "HTML"
         $message["body"]["content"] = $body
         $message["importance"] = $importance
+
+        # Creating recipient table
+        $recipient_table = @{}
+        $recipient_table["to"] = "toRecipients"
+        $recipient_table["cc"] = "ccRecipients"
+        $recipient_table["bcc"] = "bccRecipients"
+
         Try {
             # Setting recipients
-            $message["toRecipients"] = @(Set-GraphRecipientArray -Recipients $to)
-            
-            # Setting cc recipients
-            If ($PSBoundParameters.ContainsKey("Cc")) {
-                $message["ccRecipients"] = @(Set-GraphRecipientArray -Recipients $cc)
-
-            }
-
-            # Setting Bcc recipients
-            If ($PSBoundParameters.ContainsKey("Bcc")) {
-                $message["bccRecipients"] = @(Set-GraphRecipientArray -Recipients $bcc)
-
+            foreach ($recipient_type in $recipient_table.Keys) {
+                If ($PSBoundParameters.ContainsKey($recipient_type)) {
+                    # Setting recipients
+                    $message[$recipient_table[$recipient_type]] = @(Set-GraphRecipientArray -Recipients $PSBoundParameters[$recipient_type])
+                
+                }
             }
 
             # Setting attachments
@@ -132,6 +131,7 @@ Function Send-GraphMailMessage {
         Try {
             # Sending the message
             Invoke-MgGraphRequest @invoke_graph_params
+        
         } Catch {
             Write-Error $_
         
