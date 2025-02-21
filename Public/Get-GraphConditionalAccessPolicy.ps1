@@ -47,10 +47,6 @@ Function Get-GraphConditionalAccessPolicy {
         [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
         [string]$ApiVersion = "v1.0",
-        [Parameter(Mandatory=$false,ParameterSetName="Filter")]
-        [Parameter(Mandatory=$false,ParameterSetName="All")]
-        [ValidateRange(1,999)]
-        [int]$Top,
         [Parameter(Mandatory=$false)]
         [switch]$FlattenOutput
     
@@ -71,14 +67,10 @@ Function Get-GraphConditionalAccessPolicy {
             $filter = $null
 
         }
-        If ($top) {
-            $top_str = "&`$top=$top"
-
-        }
         Try {
             Do {
                 # Get all the policies
-                $r = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/$apiVersion/identity/conditionalAccess/policies?`$filter=$filter$($top_str)"
+                $r = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/$apiVersion/identity/conditionalAccess/policies?`$filter=$filter"
                 
                 # Output the policies
                 If ($flattenOutput) {
