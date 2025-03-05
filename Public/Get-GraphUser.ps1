@@ -30,7 +30,6 @@ Function Get-GraphUser {
         .INPUTS
         System.String
         System.String[]
-        System.Int32
         System.Automation.SwitchParameter        
 
         .OUTPUTS
@@ -95,7 +94,6 @@ Function Get-GraphUser {
             
             # Looping through the results until there are no more results
             } Until (!$r."@odata.nextLink")
-
         } Catch {
             Write-Error -Message $_
 
