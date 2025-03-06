@@ -15,6 +15,9 @@ Function Get-GraphGroup {
         .PARAMETER Select
         The properties to be selected for the group information. The default properties are DisplayName, Id, MailNickname, Description, and GroupTypes.
 
+        .PARAMETER Expand
+        The properties to be expanded for the group information. 
+
         .PARAMETER All
         Retrieve all groups.
 
@@ -53,6 +56,8 @@ Function Get-GraphGroup {
             
         ),
         [Parameter(Mandatory=$false)]
+        [string]$Expand,
+        [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
         [string]$ApiVersion = "v1.0"
     
@@ -69,7 +74,7 @@ Function Get-GraphGroup {
         }
         # Invoke-MgGraphRequest parameters
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/groups?`$count=true&`$filter=$filter&`$select=$($select -join ',')"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/$apiVersion/groups?`$count=true&`$filter=$filter&`$select=$($select -join ',')&`$expand=$($expand)"
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
         $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
