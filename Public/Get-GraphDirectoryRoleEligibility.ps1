@@ -16,11 +16,11 @@ Function Get-GraphDirectoryRoleEligibility {
         System.String
 
         .OUTPUTS
-        System.Object[]
+        System.Object
 
     #>
     [CmdletBinding()]
-    [OutputType([System.Object[]])]
+    [OutputType([System.Object])]
     param (
         [Parameter(Mandatory=$true)]
         [string]$PrincipalId
@@ -53,13 +53,18 @@ Function Get-GraphDirectoryRoleEligibility {
         $add_member_params["Value"] = "Eligible"
         
         # Getting the role assignments
-        $roles = Do {
-            $r = (Invoke-MgGraphRequest @invoke_mg_params)
-            $r.Value
-            $invoke_mg_params["Uri"] = $r."@odata.nextLink"
+        Try {
+            $roles = Do {
+                $r = (Invoke-MgGraphRequest @invoke_mg_params)
+                $r.Value
+                $invoke_mg_params["Uri"] = $r."@odata.nextLink"
+            
+            # Looping through the results until there are no more results
+            } Until (!$r."@odata.nextLink")
+        } Catch {
+            Write-Error "Error getting role assignments: $_" -ErrorAction Stop
         
-        # Looping through the results until there are no more results
-        } Until (!$r."@odata.nextLink")
+        }
 
         # Adding the assignment state to the role assignments
         $roles | Add-Member @add_member_params
