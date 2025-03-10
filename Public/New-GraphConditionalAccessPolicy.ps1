@@ -38,12 +38,12 @@ Function New-GraphConditionalAccessPolicy {
     Begin {
 
     } Process {
-        If ($PSCmdlet.ShouldProcess("Update Conditional Access Policy")) {
+        If ($PSCmdlet.ShouldProcess("New Conditional Access Policy",$policy.DisplayName)) {
             # Convert the JSON body to a PowerShell object
             $policy = $bodyParameters | ConvertFrom-Json
 
             # Update the DisplayName and State
-            $policy.DisplayName = "$($policy.DisplayName) - COPY"
+            $policy.DisplayName = "$($policy.DisplayName)"
             $policy.State = "enabledForReportingButNotEnforced"
 
             # Remove the Id, CreatedDateTime, ModifiedDateTime, and TemplateId properties
