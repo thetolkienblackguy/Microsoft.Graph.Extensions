@@ -23,7 +23,9 @@ Function Get-GraphDirectoryRoleAssignment {
     [OutputType([System.Object])]
     param (
         [Parameter(Mandatory=$true)]
-        [string]$PrincipalId
+        [string]$PrincipalId,
+        [Parameter(Mandatory=$false)]
+        [string[]]$Select = @("Id","description","displayName")
     
     )
     Begin {
@@ -41,7 +43,7 @@ Function Get-GraphDirectoryRoleAssignment {
     } Process {
         # Invoke-MgGraphRequest parameter
         $invoke_mg_params = @{}
-        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignments?`$count=true&`$filter=principalId eq '$id'&`$expand=roleDefinition"
+        $invoke_mg_params["Uri"] = "https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignments?`$count=true&`$filter=principalId eq '$principalId'&`$expand=roleDefinition(`$select=$($select -join ',')`)"
         $invoke_mg_params["Method"] = "GET"
         $invoke_mg_params["Headers"] = @{}
         $invoke_mg_params["Headers"]["ConsistencyLevel"] = "eventual"
