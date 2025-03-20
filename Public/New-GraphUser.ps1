@@ -30,6 +30,8 @@ function New-GraphUser {
         .PARAMETER JobTitle
         Specifies the job title of the user.
 
+        .PARAMETER CompanyName
+
         .PARAMETER Department
         Specifies the department of the user.
 
@@ -100,6 +102,8 @@ function New-GraphUser {
         [string]$Surname,
         [Parameter(Mandatory=$false)]
         [string]$JobTitle,
+        [Parameter(Mandatory=$false)]
+        [string]$CompanyName,
         [Parameter(Mandatory=$false)]
         [string]$Department,
         [Parameter(Mandatory=$false)]
