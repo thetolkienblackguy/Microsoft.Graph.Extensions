@@ -50,7 +50,9 @@ Function Disable-GraphUser {
         [switch]$RevokeSessions,
         [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
-        [string]$ApiVersion = "v1.0"
+        [string]$ApiVersion = "v1.0",
+        [Parameter(Mandatory=$false)]
+        [switch]$PassThru
   
     )
     Begin {
