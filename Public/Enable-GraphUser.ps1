@@ -12,11 +12,15 @@ Function Enable-GraphUser {
         .PARAMETER ApiVersion
         The API version to use. The default value is v1.0.
 
+        .PARAMETER PassThru
+        If this switch is used, the user object will be passed through the pipeline.
+
+
         .EXAMPLE
         Enable-GraphUser -UserId "12345678-1234-1234-1234-123456789012"
 
         .EXAMPLE
-        Get-GraphUser -Filter "UserPrincipalName eq 'john.doe@contoso.com'" | Enable-GraphUser -RevokeSessions
+        Get-GraphUser -Filter "UserPrincipalName eq 'john.doe@contoso.com'" | Enable-GraphUser -PassThru
 
         .INPUTS
         System.String
@@ -41,10 +45,10 @@ Function Enable-GraphUser {
         )]
         [string[]]$UserId,
         [Parameter(Mandatory=$false)]
-        [switch]$RevokeSessions,
-        [Parameter(Mandatory=$false)]
         [ValidateSet("Beta","v1.0")]
-        [string]$ApiVersion = "v1.0"
+        [string]$ApiVersion = "v1.0",
+        [Parameter(Mandatory=$false)]
+        [switch]$PassThru
   
     )
     Begin {
